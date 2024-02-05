@@ -19,6 +19,10 @@ const SignUp = () => {
     const [nickNameValid, setNickNameValid] = useState(false);
     const [notAllow, setNotAllow] = useState(true);
 
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
+
+
     const resetInput = () => {
         setEmail('');
         setPw('');
@@ -56,6 +60,19 @@ const SignUp = () => {
         }
     }
 
+    const Modal = ({ isOpen, message, onClose }) => {
+        if (!isOpen) return null;
+
+        return (
+            <div className="modal-overlay">
+                <div className="modal-content">
+                    <p>{message}</p>
+                    <button onClick={() => onClose()}>닫기</button>
+                </div>
+            </div>
+        );
+    };
+
     // 닉네임 중복 검사
     const handleNickName = async (e) => {
         console.log(`handleNickName: ${nickName}`);
@@ -66,12 +83,13 @@ const SignUp = () => {
                 url: `/api/auth/check?nickname=${nickName}`,
                 headers: {'Content-Type': 'application/json'},
             });
-            console.log(`api 요청 후: ${nickName}`);
             if (response.status === 200) {
-                alert("사용 가능한 닉네임 입니다")
+                console.log(`api 요청 후: ${nickName}`);
                 setNickNameValid(true); // 닉네임이 유효하다는 것을 나타냄
             } else {
                 setNickNameValid(false); // 닉네임이 유효하지 않다는 것을 나타냄
+                setModalMessage("이미 존재하는 닉네임입니다");
+                setModalOpen(true);
             }
         } catch (err) {
             console.error(err);
@@ -84,6 +102,12 @@ const SignUp = () => {
         setNickName(e.target.value);
         console.log(`e.tartget.value: ${e.target.value}`);
         console.log(`nickName: ${nickName}`);
+
+        // 닉네임이 비어 있는지 확인
+        if (e.target.value !== nickName) {
+            setNickNameValid(false);
+            return;
+        }
     };
 
     // 이메일 정규표현식 검사
@@ -185,14 +209,16 @@ const SignUp = () => {
                     <input className="input" type="text" placeholder="닉네임을 입력하세요" style={{width: '80%', marginTop: '9px'}} value={nickName} onChange={changeNickName}/>
                     <button className='nickNameButton' onClick={handleNickName}>중복확인</button>
                 </div>
-                <div className="errorMessageWrap">
+                <div className="nickNameMessageWrap">
                     {nickNameValid && nickName.length > 0 && (
-                        <div>이미 사용 중인 닉네임입니다.</div>
+                        <div>사용 가능한 닉네임입니다.</div>
                     )}
                 </div>
 
                 <button disabled={notAllow} className="authButton" onClick={handleInputClick}>가입하기</button>
+                <Modal isOpen={isModalOpen} message={modalMessage} onClose={() => setModalOpen(false)} />
             </div>
+
         </div>
     )
 }
