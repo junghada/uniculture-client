@@ -22,6 +22,7 @@ const SignUp = () => {
     const resetInput = () => {
         setEmail('');
         setPw('');
+        setPw2('');
         setNickName('');
     }
 
@@ -57,14 +58,17 @@ const SignUp = () => {
 
     // 닉네임 중복 검사
     const handleNickName = async (e) => {
-        setNickName(e.target.value);
+        console.log(`handleNickName: ${nickName}`);
+
         try {
             let response = await axios({
                 method: 'get',
                 url: `/api/auth/check?nickname=${nickName}`,
                 headers: {'Content-Type': 'application/json'},
             });
+            console.log(`api 요청 후: ${nickName}`);
             if (response.status === 200) {
+                alert("사용 가능한 닉네임 입니다")
                 setNickNameValid(true); // 닉네임이 유효하다는 것을 나타냄
             } else {
                 setNickNameValid(false); // 닉네임이 유효하지 않다는 것을 나타냄
@@ -72,6 +76,14 @@ const SignUp = () => {
         } catch (err) {
             console.error(err);
         }
+
+        console.log('끝');
+    };
+
+    const changeNickName = (e) => {
+        setNickName(e.target.value);
+        console.log(`e.tartget.value: ${e.target.value}`);
+        console.log(`nickName: ${nickName}`);
     };
 
     // 이메일 정규표현식 검사
@@ -170,11 +182,11 @@ const SignUp = () => {
 
                 <div className="inputTitle">🌏 닉네임</div>
                 <div className="inputWrap" style={{padding: '10px'}}>
-                    <input className="input" type="text" placeholder="닉네임을 입력하세요" style={{width: '80%', marginTop: '9px'}} value={nickName}/>
+                    <input className="input" type="text" placeholder="닉네임을 입력하세요" style={{width: '80%', marginTop: '9px'}} value={nickName} onChange={changeNickName}/>
                     <button className='nickNameButton' onClick={handleNickName}>중복확인</button>
                 </div>
                 <div className="errorMessageWrap">
-                    {!nickNameValid && nickName.length > 0 && (
+                    {nickNameValid && nickName.length > 0 && (
                         <div>이미 사용 중인 닉네임입니다.</div>
                     )}
                 </div>
@@ -186,10 +198,3 @@ const SignUp = () => {
 }
 
 export default SignUp;
-
-/*
-<Form.Group className="mb-3" controlId="formGroupPassword">
-    <Form.Label className="inputTitle">비밀번호 확인</Form.Label>
-    <Form.Control className="input" type="password" placeholder="비밀번호 재확인" value={pw2} onChange={(e) => setPw2(e.target.value)} />
-    <div className="errorMessageWrap">일치하지 않습니다.</div>
-</Form.Group>*/
