@@ -31,7 +31,7 @@ const Header = () => {
                 </div>
 
                 <div className={`ms-auto order-lg-last`}>
-                    <Link to="/login" className={`btn nav-link`} style={{ backgroundColor: "#B3C693", padding: "5px 15px", marginRight: "10px" }}>
+                    <Link to="/sign-in" className={`btn nav-link`} style={{ backgroundColor: "#B3C693", padding: "5px 15px", marginRight: "10px" }}>
                         로그인
                     </Link>
                 </div>

@@ -94,7 +94,7 @@ const SignIn = () => {
             <div className="auth-page">
                 <div className="title">로그인</div>
 
-                <div className="inputTitle">이메일</div>
+                <div className="inputTitle">✉️ 이메일</div>
                 <div className="inputWrap">
                     <input className="input" type="email" placeholder="test@example.com" value={email} onChange={handleEmail}/>
                 </div>
@@ -104,7 +104,7 @@ const SignIn = () => {
                     )}
                 </div>
 
-                <div className="inputTitle">비밀번호</div>
+                <div className="inputTitle">🔒 비밀번호</div>
                 <div className="inputWrap">
                     <input className="input" type={showPassword ? "text" : "password"} placeholder="영문, 숫자, 특수문자 포함 8자 이상" value={pw} onChange={handlePw}/>
                 </div>
@@ -118,7 +118,7 @@ const SignIn = () => {
                     <span className="pwCheck">비밀번호 보기</span>
                 </label>
 
-                <button disabled={notAllow} className="authButton" onClick={handleInputClick}>로그인</button>
+                <button disabled={notAllow} className="authButton" onClick={handleInputClick} style={{marginBottom: '7px', marginTop: '35px'}}>로그인</button>
                 <div className="signUpText">
                     <Link to={"/sign-up"} style={{ textDecoration: "none"}}>
                         <div style={{color: "dimgrey"}}>회원가입</div>
