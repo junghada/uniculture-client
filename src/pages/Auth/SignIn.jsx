@@ -19,36 +19,38 @@ const SignIn = () => {
         setPw('');
     }
 
-    const handleInputClick = async (e) => {
-        console.log('sing-up');
-        const request_data = { email: email, password: pw };
-        console.log('req_data: ', request_data);
-        try{
-            let response = await axios({
-                method: 'post',
-                url: '/api/auth/signup',
-                headers: {'Content-Type': 'application/json'},
-                data: JSON.stringify(request_data)
-            });
+    const handleLogin = async () => {
+        console.log('Login start');
+        try {
+            const response = await axios.post(
+                'api/auth/login',
+                {
+                    email: email,
+                    password: pw,
+                },
+            );
             console.log('서버 응답: ', response);
             console.log('response.status: ', response.status);
-            if(response.status === 200) {
-                alert("회원가입이 완료되었습니다!")
-                //navigate("/", {});
-            }
-            else if(response.status === 400) {
-                alert("이미 가입한 이메일입니다.")
-                resetInput();
-            }
-            else {
-                alert("회원가입에 실패하였습니다.")
-                resetInput();
-            }
-        } catch (err) {
-            resetInput();
-        }
-    }
 
+            // 로그인 성공
+            if (response.status === 200) {
+                if(response.data.accessToken){ // null인 경우 실행되지 않음
+                    localStorage.setItem('accessToken', response.data.accessToken);
+                }
+                navigate("/", {}); // 로그인 성공 후 메인 페이지로 이동
+            }
+
+            // 로그인 실패
+            else {
+                alert(response.data.message); // 에러 메시지
+                resetInput();
+            }
+
+        } catch (error) { // 네트워크 오류 등 예외 처리
+            resetInput();
+            console.error(error);
+        }
+    };
 
 
     // 이메일 정규표현식 검사
@@ -89,6 +91,7 @@ const SignIn = () => {
         setShowPassword(!showPassword);
     };
 
+
     return (
         <div style={{ backgroundColor: '#FBFBF3', minHeight: '100vh' }}>
             <div className="auth-page">
@@ -118,7 +121,7 @@ const SignIn = () => {
                     <span className="pwCheck">비밀번호 보기</span>
                 </label>
 
-                <button disabled={notAllow} className="authButton" onClick={handleInputClick} style={{marginBottom: '7px', marginTop: '35px'}}>로그인</button>
+                <button disabled={notAllow} className="authButton" onClick={handleLogin} style={{marginBottom: '7px', marginTop: '35px'}}>로그인</button>
                 <div className="signUpText">
                     <Link to={"/sign-up"} style={{ textDecoration: "none"}}>
                         <div style={{color: "dimgrey"}}>회원가입</div>
