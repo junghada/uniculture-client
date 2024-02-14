@@ -1,0 +1,27 @@
+.profile{
+    padding-top: 50px;
+    padding-left: 100px;
+}
+
+.left{
+    float: left;
+    margin-right: 100px;
+}
+
+.name{
+    padding-right: 10px;
+    display: inline-block;
+}
+
+.edit{
+    display: inline-block;
+}
+
+.posts{
+    display: inline-block;
+    padding-right: 100px;
+}
+
+.friends{
+    display: inline-block;
+}
