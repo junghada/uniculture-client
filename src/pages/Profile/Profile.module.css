@@ -6,6 +6,13 @@
 .left{
     float: left;
     margin-right: 100px;
+    background-color : green;
+    border-radius: 50%;
+    width: 200px;
+    height: 200px;
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
 }
 
 .name{
@@ -15,13 +22,29 @@
 
 .edit{
     display: inline-block;
+    margin-bottom: 20px;
 }
 
-.posts{
-    display: inline-block;
-    padding-right: 100px;
+.intro{
+    margin-bottom: 20px;
 }
 
-.friends{
+.post{
     display: inline-block;
+    padding-right: 10px;
+}
+
+.postNum{
+    display: inline-block;
+    padding-right: 50px;
+}
+
+.friend{
+    display: inline-block;
+    padding-right: 10px;
+}
+
+.friendNum{
+    display: inline-block;
+    padding-right: 50px;
 }
