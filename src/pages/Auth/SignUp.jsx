@@ -3,8 +3,6 @@ import React, {useEffect, useState} from "react"
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import './Auth.css';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
 
 const SignUp = () => {
     let navigate = useNavigate(); // 다른 component 로 이동할 때 사용
@@ -21,9 +19,9 @@ const SignUp = () => {
     const [nickNameValid, setNickNameValid] = useState(false);
     const [notAllow, setNotAllow] = useState(true);
 
-    const [show, setShow] = useState(false); // 모달창
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
+
 
     const resetInput = () => {
         setEmail('');
@@ -62,6 +60,19 @@ const SignUp = () => {
         }
     }
 
+    const Modal = ({ isOpen, message, onClose }) => {
+        if (!isOpen) return null;
+
+        return (
+            <div className="modal-overlay">
+                <div className="modal-content">
+                    <p>{message}</p>
+                    <button onClick={() => onClose()}>닫기</button>
+                </div>
+            </div>
+        );
+    };
+
     // 닉네임 중복 검사
     const handleNickName = async (e) => {
         console.log(`handleNickName: ${nickName}`);
@@ -77,7 +88,8 @@ const SignUp = () => {
                 setNickNameValid(true); // 닉네임이 유효하다는 것을 나타냄
             } else {
                 setNickNameValid(false); // 닉네임이 유효하지 않다는 것을 나타냄
-                handleShow();
+                setModalMessage("이미 존재하는 닉네임입니다");
+                setModalOpen(true);
             }
         } catch (err) {
             console.error(err);
@@ -149,9 +161,13 @@ const SignUp = () => {
 
     return (
         <div style={{ backgroundColor: '#FBFBF3', minHeight: '100vh' }}>
+<<<<<<< HEAD
             <div className="auth-layout">
+=======
+            <div className="auth-page">
+>>>>>>> origin/Develop-jeongha
                 <div className="title">회원가입</div>
-                <div className="sub-title">나의 성장을 돕는 언어교류 플랫폼
+                <div className="sub-title">너와 나의 언어교류
                     <span style={{color: '#8BC765'}}> UniCulture</span></div>
 
                 <div className="inputTitle">✉️ 이메일</div>
@@ -202,19 +218,11 @@ const SignUp = () => {
                         <div>사용 가능한 닉네임입니다.</div>
                     )}
                 </div>
-                <button disabled={notAllow} className="authButton" onClick={handleInputClick}>가입하기</button>
 
-                <Button variant="primary" onClick={handleShow}>
-                    modal test
-                </Button>
-                <Modal show={show} onHide={handleClose} centered>
-                    <Modal.Title style={{paddingTop: '33px', paddingBottom: '20px'}}>닉네임 중복</Modal.Title>
-                    <Modal.Body>이미 사용 중인 닉네임입니다. <br/>다른 닉네임을 사용해주세요.</Modal.Body>
-                    <Button variant="secondary" onClick={handleClose} style={{backgroundColor: '#8BC765', border: 'none', marginBottom: '13px', padding: '7px 20px'}}>
-                        확인
-                    </Button>
-                </Modal>
+                <button disabled={notAllow} className="authButton" onClick={handleInputClick}>가입하기</button>
+                <Modal isOpen={isModalOpen} message={modalMessage} onClose={() => setModalOpen(false)} />
             </div>
+
         </div>
     )
 }
