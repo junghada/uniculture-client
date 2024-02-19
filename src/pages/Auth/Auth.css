@@ -4,7 +4,7 @@
     /*bottom: 0;*/
     width: 100%;
     max-width: 500px;
-    margin: 0 auto; /* total-page와 auth-page 간의 여백을 만들기 위한 margin-top입니다. */
+    margin: 0 auto;
     padding: 0 20px;
 
     /*left: 50%;*/
