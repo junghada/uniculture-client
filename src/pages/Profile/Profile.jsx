@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { MdAccountCircle, MdReplayCircleFilled } from "react-icons/md";
 import { IoIosSettings } from "react-icons/io";
 import styles from './Profile.module.css'
 import Layout from "../../components/Layout";
