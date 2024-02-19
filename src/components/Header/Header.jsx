@@ -21,7 +21,7 @@ const Header = () => {
     );
 
     return (
-        <nav className={`navbar navbar-expand-lg`} style={{ backgroundColor: '#C8DCA0', padding: "10px 80px" }}>
+        <nav className={`navbar navbar-expand-lg`} style={{ backgroundColor: '#C8DCA0' }}>
             <div className="container-fluid">
                 <div className="d-flex align-items-center">
                     <Link to="/" className={`navbar-brand ${activePage('/')}`} aria-current="page" style={{ fontFamily: "SuezOne"}}>
@@ -33,6 +33,12 @@ const Header = () => {
                 <div className={`ms-auto order-lg-last`}>
                     <Link to="/sign-in" className={`btn nav-link`} style={{ backgroundColor: "#B3C693", padding: "5px 15px", marginRight: "10px" }}>
                         로그인
+                    </Link>
+                </div>
+
+                <div className={`order-lg-last`}>
+                    <Link to="/sign-up" className={`btn nav-link`} style={{ backgroundColor: "#B3C693", padding: "5px 15px", marginRight: "10px" }}>
+                        회원가입
                     </Link>
                 </div>
 
