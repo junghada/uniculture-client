@@ -3,6 +3,7 @@ import "./ChatList.css";
 import "./ChatMain.css"
 
 const ChatList = () => {
+
     return (
         <div className="chat-list">
             고정너비

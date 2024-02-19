@@ -161,11 +161,7 @@ const SignUp = () => {
 
     return (
         <div style={{ backgroundColor: '#FBFBF3', minHeight: '100vh' }}>
-<<<<<<< HEAD
             <div className="auth-layout">
-=======
-            <div className="auth-page">
->>>>>>> origin/Develop-jeongha
                 <div className="title">회원가입</div>
                 <div className="sub-title">너와 나의 언어교류
                     <span style={{color: '#8BC765'}}> UniCulture</span></div>
