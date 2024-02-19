@@ -148,8 +148,8 @@ const SignUp = () => {
 
 
     return (
-        <div>
-            <div className="auth-page">
+        <div style={{ backgroundColor: '#FBFBF3', minHeight: '100vh' }}>
+            <div className="auth-layout">
                 <div className="title">회원가입</div>
                 <div className="sub-title">나의 성장을 돕는 언어교류 플랫폼
                     <span style={{color: '#8BC765'}}> UniCulture</span></div>
