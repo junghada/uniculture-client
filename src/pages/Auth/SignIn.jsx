@@ -94,7 +94,7 @@ const SignIn = () => {
 
     return (
         <div style={{ backgroundColor: '#FBFBF3', minHeight: '100vh' }}>
-            <div className="auth-page">
+            <div className="auth-layout">
                 <div className="title">로그인</div>
 
                 <div className="inputTitle">✉️ 이메일</div>
