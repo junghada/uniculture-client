@@ -22,7 +22,7 @@ const Header = () => {
 
     return (
         <nav className={`navbar navbar-expand-lg`} style={{ backgroundColor: '#C8DCA0' }}>
-            <div className="container-fluid">
+            <div className="container-fluid" style={{paddingLeft: "50px", paddingRight: "50px"}}>
                 <div className="d-flex align-items-center">
                     <Link to="/" className={`navbar-brand ${activePage('/')}`} aria-current="page" style={{ fontFamily: "SuezOne"}}>
                         <img src={logoImg} alt="Logo" width="30" height="24" className="d-inline-block align-text-top"/>
