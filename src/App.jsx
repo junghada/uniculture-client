@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './pages/Home/Home';
 import SignUp from './pages/Auth/SignUp';
 import SignIn from './pages/Auth/SignIn';
+import Chat from './pages/Chat/Chat';
 import './App.css'
 import "./styles/font.css";
 import Profile from './pages/Profile/Profile';
@@ -24,6 +25,7 @@ function App() {
             <Route path="/accounts/edit" element={<ProfileEdit />} />
             <Route path="/accounts/personal-info" element={<ProfileInfo />} />
             <Route path="/accounts/delete" element={<ProfileDelete />} />
+            <Route path="/chat" element={<Chat />} />
           </Routes>
         </BrowserRouter>
       </>
