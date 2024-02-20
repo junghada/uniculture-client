@@ -17,6 +17,11 @@ const Header = () => {
     const getToken = () => {
         return localStorage.getItem('accessToken'); // 로컬 스토리지에서 토큰 가져옴
     };
+
+    const removeToken = () => {
+        localStorage.removeItem('accessToken'); // 로컬 스토리지에서 토큰 가져옴
+        setIsLogin(false);
+    };
     const loginCheck = async () => {
         console.log('loginCheck');
         try {
@@ -57,10 +62,9 @@ const Header = () => {
     );
 
     return (
-        // <div className="page-layout">
             <nav className={`navbar navbar-expand-lg`} style={{ backgroundColor: '#C8DCA0' }}>
-                <div className="container-fluid">
-                    <div className="d-flex align-items-center" style={{paddingLeft: '100px'}}>
+                <div className="container-fluid" style={{paddingLeft: "100px", paddingRight: "100px"}}>
+                    <div className="d-flex align-items-center">
                         <Link to="/" className={`navbar-brand ${activePage('/')}`} aria-current="page" style={{ fontFamily: "SuezOne"}}>
                             <img src={logoImg} alt="Logo" width="30" height="24" className="d-inline-block align-text-top"/>
                             UniCulture
@@ -68,7 +72,7 @@ const Header = () => {
                     </div>
 
                     {isLogin ? (
-                        <button className={`btn nav-link`} style={{ backgroundColor: "#B3C693", padding: "5px 15px", marginRight: "10px"}}>
+                        <button className={`btn nav-link ms-auto order-lg-last`} onClick={removeToken} style={{ backgroundColor: "#B3C693", padding: "5px 15px", marginRight: "10px"}}>
                             로그아웃
                         </button>
                     ) : (
@@ -91,7 +95,6 @@ const Header = () => {
                         type="button"
                         onClick={handleToggle}
                         aria-expanded={isNavOpen ? 'true' : 'false'}
-                        style={{marginRight: '100px'}}
                     >
                         <span className="navbar-toggler-icon"></span>
                     </button>
@@ -107,7 +110,7 @@ const Header = () => {
                     </div>
                 </div>
             </nav>
-        // </div>
+
     );
 };
 

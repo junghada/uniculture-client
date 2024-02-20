@@ -11,7 +11,7 @@ const Profile = () => {
 
     // 로그인 후 저장된 토큰 가져오는 함수
     const getToken = () => {
-    return localStorage.getItem('token'); // 쿠키 또는 로컬 스토리지에서 토큰을 가져옴
+    return localStorage.getItem('accessToken'); // 쿠키 또는 로컬 스토리지에서 토큰을 가져옴
     };
 
     // 서버에 정보를 요청하는 함수
@@ -39,11 +39,9 @@ const Profile = () => {
         }
     };
 
-    // useEffect(() => {
-    //     fetchUserInfo();
-    //         if(userInfo.profileImage != null)
-    //             setImage(userInfo.profileImage)
-    // }, [])
+    useEffect(() => {
+        fetchUserInfo();
+    }, [])
 
     return (
         <Layout>
