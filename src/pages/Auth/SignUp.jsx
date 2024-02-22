@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import './Auth.css';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Swal from "sweetalert2";
 
 const SignUp = () => {
     let navigate = useNavigate(); // 다른 component 로 이동할 때 사용
@@ -21,9 +22,9 @@ const SignUp = () => {
     const [nickNameValid, setNickNameValid] = useState(false);
     const [notAllow, setNotAllow] = useState(true);
 
-    const [show, setShow] = useState(false); // 모달창
+    /*const [show, setShow] = useState(false); // 모달창
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleShow = () => setShow(true);*/
 
     const resetInput = () => {
         setEmail('');
@@ -47,7 +48,7 @@ const SignUp = () => {
             console.log('response.status: ', response.status);
             if(response.status === 200) {
                 alert("회원가입이 완료되었습니다!")
-                //navigate("/", {});
+                navigate("/", {});
             }
             else if(response.status === 400) {
                 alert("이미 가입한 이메일입니다.")
@@ -61,6 +62,16 @@ const SignUp = () => {
             resetInput();
         }
     }
+
+    const nickNameWarning = () => {
+        Swal.fire({
+            icon: "warning",
+            title: "닉네임 중복",
+            html: "이미 사용 중인 닉네임입니다. <br>다른 닉네임을 사용해주세요.",
+            confirmButtonColor: "#8BC765",
+            confirmButtonText: "확인",
+        });
+    };
 
     // 닉네임 중복 검사
     const handleNickName = async (e) => {
@@ -77,7 +88,7 @@ const SignUp = () => {
                 setNickNameValid(true); // 닉네임이 유효하다는 것을 나타냄
             } else {
                 setNickNameValid(false); // 닉네임이 유효하지 않다는 것을 나타냄
-                handleShow();
+                nickNameWarning();
             }
         } catch (err) {
             console.error(err);
@@ -204,7 +215,7 @@ const SignUp = () => {
                 </div>
                 <button disabled={notAllow} className="authButton" onClick={handleInputClick}>가입하기</button>
 
-                <Button variant="primary" onClick={handleShow}>
+                {/*<Button variant="primary" onClick={handleShow}>
                     modal test
                 </Button>
                 <Modal show={show} onHide={handleClose} centered>
@@ -213,7 +224,7 @@ const SignUp = () => {
                     <Button variant="secondary" onClick={handleClose} style={{backgroundColor: '#8BC765', border: 'none', marginBottom: '13px', padding: '7px 20px'}}>
                         확인
                     </Button>
-                </Modal>
+                </Modal>*/}
             </div>
         </div>
     )
