@@ -1,11 +1,10 @@
 //회원 가입 페이지
 import React, {useEffect, useState} from "react"
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import './Auth.css';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
 import Swal from "sweetalert2";
+import {AiOutlineLink} from "react-icons/ai";
 
 const SignUp = () => {
     let navigate = useNavigate(); // 다른 component 로 이동할 때 사용
@@ -21,10 +20,7 @@ const SignUp = () => {
     const [passwordsMatch, setPasswordsMatch] = useState(true);
     const [nickNameValid, setNickNameValid] = useState(false);
     const [notAllow, setNotAllow] = useState(true);
-
-    /*const [show, setShow] = useState(false); // 모달창
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);*/
+    const [gender, setGender] = useState('male');
 
     const resetInput = () => {
         setEmail('');
@@ -62,6 +58,10 @@ const SignUp = () => {
             resetInput();
         }
     }
+
+    const handleGenderChange = (event) => {
+        setGender(event.target.value);
+    };
 
     const nickNameWarning = () => {
         Swal.fire({
@@ -158,14 +158,18 @@ const SignUp = () => {
     };
 
 
+
+
     return (
         <div style={{ backgroundColor: '#FBFBF3', minHeight: '100vh' }}>
             <div className="auth-layout">
-                <div className="title">회원가입</div>
+                {/*<div className="title">회원가입</div>*/}
+                <div className="title"><Link to={"/"} style={{ color: "#04B404", textDecoration: "none"}}>UniCulture</Link></div>
                 <div className="sub-title">나의 성장을 돕는 언어교류 플랫폼
-                    <span style={{color: '#8BC765'}}> UniCulture</span></div>
+                    {/*<span style={{color: '#8BC765'}}> UniCulture</span>*/}
+                </div>
 
-                <div className="inputTitle">✉️ 이메일</div>
+                <div className="inputTitle">이메일</div>
                 <div className="inputWrap">
                     <input className="input" type="email" placeholder="test@example.com" value={email} onChange={handleEmail}/>
                 </div>
@@ -175,7 +179,7 @@ const SignUp = () => {
                     )}
                 </div>
 
-                <div className="inputTitle">🔒 비밀번호</div>
+                <div className="inputTitle">비밀번호</div>
                 <div className="inputWrap">
                     <input className="input" type={showPassword ? "text" : "password"} placeholder="영문, 숫자, 특수문자 포함 8자 이상" value={pw} onChange={handlePw}/>
                 </div>
@@ -184,12 +188,12 @@ const SignUp = () => {
                         <div>영문, 숫자, 특수문자 포함 8자 이상 입력해주세요.</div>
                     )}
                 </div>
-                <label>
-                    <input type='checkbox' className="custom-checkbox" onChange={toggleShowPassword} />
+                <label className="checkbox-hover">
+                    <input type="checkbox" onChange={toggleShowPassword} />
                     <span className="pwCheck">비밀번호 보기</span>
                 </label>
 
-                <div className="inputTitle">⚠️ 비밀번호 확인</div>
+                <div className="inputTitle">비밀번호 확인</div>
                 <div className="inputWrap">
                     <input className="input" type={showPassword2 ? "text" : "password"} placeholder="영문, 숫자, 특수문자 포함 8자 이상" value={pw2} onChange={handlePw2}/>
                 </div>
@@ -198,12 +202,32 @@ const SignUp = () => {
                         <div>비밀번호가 일치하지 않습니다.</div>
                     )}
                 </div>
-                <label>
-                    <input type='checkbox' className="custom-checkbox" onChange={toggleShowPassword2} />
+                <label className="checkbox-hover">
+                    <input type="checkbox" onChange={toggleShowPassword2} />
                     <span className="pwCheck">비밀번호 보기</span>
                 </label>
 
-                <div className="inputTitle">🌏 닉네임</div>
+                <div className="inputTitle">성별</div>
+                <label className="radio-style">
+                    <input
+                        type="radio"
+                        value="male"
+                        checked={gender === 'male'}
+                        onChange={handleGenderChange}
+                    />
+                    <span className="radio-text">남성</span>
+                </label>
+                <label className="radio-style">
+                    <input
+                        type="radio"
+                        value="female"
+                        checked={gender === 'female'}
+                        onChange={handleGenderChange}
+                    />
+                    <span className="radio-text">여성</span>
+                </label>
+
+                <div className="inputTitle">닉네임</div>
                 <div className="inputWrap" style={{padding: '10px'}}>
                     <input className="input" type="text" placeholder="닉네임을 입력하세요" style={{width: '80%', marginTop: '9px'}} value={nickName} onChange={changeNickName}/>
                     <button className='nickNameButton' onClick={handleNickName}>중복확인</button>
@@ -215,16 +239,6 @@ const SignUp = () => {
                 </div>
                 <button disabled={notAllow} className="authButton" onClick={handleInputClick}>가입하기</button>
 
-                {/*<Button variant="primary" onClick={handleShow}>
-                    modal test
-                </Button>
-                <Modal show={show} onHide={handleClose} centered>
-                    <Modal.Title style={{paddingTop: '33px', paddingBottom: '20px'}}>닉네임 중복</Modal.Title>
-                    <Modal.Body>이미 사용 중인 닉네임입니다. <br/>다른 닉네임을 사용해주세요.</Modal.Body>
-                    <Button variant="secondary" onClick={handleClose} style={{backgroundColor: '#8BC765', border: 'none', marginBottom: '13px', padding: '7px 20px'}}>
-                        확인
-                    </Button>
-                </Modal>*/}
             </div>
         </div>
     )

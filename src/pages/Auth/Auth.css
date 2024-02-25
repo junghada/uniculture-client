@@ -16,14 +16,15 @@
 .title {
     padding-top: 60px;
     text-align: center;
-    font-size: 27px;
-    font-weight: 700;
-    padding-bottom: 30px;
+    font-size: 30px;
+    font-weight: 800;
+    padding-bottom: 20px;
     /*line-height: 9.5;*/ /*글 간격*/
+    color: #04B404;
 }
 
 .sub-title {
-    margin-bottom: 41px;
+    margin-bottom: 55px;
     text-align: center;
     font-size: 16px;
     font-weight: 550;
@@ -31,7 +32,7 @@
 }
 
 .inputTitle {
-    margin-top: 25px;
+    margin-top: 35px;
     font-size: 14px;
     font-weight: 550;
     color: #262626;
@@ -112,18 +113,29 @@
     font-size: 13.5px;
 }
 
+[type="checkbox"] {
+    border: 1.5px solid dimgrey;
+    border-radius: 20%;
+    width: 0.75em;
+    height: 0.75em;
+    accent-color: #89DE55;
+    margin-left: 5px;
+}
+
+[type="checkbox"]:hover {
+    box-shadow: 0 0 3px 1px lightgrey;
+    cursor: pointer;
+}
+
+.checkbox-hover {
+    cursor: pointer;
+}
+
 .signUpText {
     text-align: right;
     margin-top: 17px;
     font-size: 15px;
     padding-bottom: 50px;
-}
-
-.custom-checkbox {
-    margin-top: 10px;
-    accent-color: #89DE55;
-    border-color: lightgray !important;
-    margin-left: 5px;
 }
 
 .nickNameButton {
@@ -175,3 +187,42 @@
     cursor: pointer;
     padding: 8px;
 }
+
+.radio-style {
+    font-size: 16px;
+    font-weight: 530;
+    padding: 0.5em 0.7em;
+    line-height: 2rem;
+}
+
+.radio-style:hover {
+    cursor: pointer;
+}
+
+.radio-text {
+    padding-left: 5px;
+}
+
+[type="radio"] {
+    appearance: none;
+    border: 1.5px solid gray;
+    border-radius: 50%;
+    width: 0.8em;
+    height: 0.8em;
+    transition: border 0.2s ease-in-out;
+}
+
+[type="radio"]:checked {
+    border: 0.25em solid #5FB404;
+}
+
+[type="radio"]:focus-visible {
+    outline: 1px dotted #5FB404;
+    outline-offset: 1px;
+}
+
+[type="radio"]:hover {
+    box-shadow: 0 0 1px 2px lightgrey;
+    cursor: pointer;
+}
+

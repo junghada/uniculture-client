@@ -85,7 +85,7 @@ const SignIn = () => {
     return (
         <div style={{ backgroundColor: '#FBFBF3', minHeight: '100vh' }}>
             <div className="auth-layout">
-                <div className="title">로그인</div>
+                <div className="title"><Link to={"/"} style={{ color: "#04B404", textDecoration: "none"}}>UniCulture</Link></div>
                 <div className="inputTitle">✉️ 이메일</div>
                 <div className="inputWrap">
                     <input className="input" type="email" placeholder="test@example.com" value={email} onChange={handleEmail}/>
