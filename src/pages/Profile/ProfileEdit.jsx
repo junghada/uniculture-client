@@ -1,14 +1,14 @@
 import Layout from "../../components/Layout";
 import Sidebar from "../../components/ProfileSidebar/Sidebar";
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const ProfileEdit = () => {
     const [userInfo, setUserInfo] = useState(null);
 
     // 로그인 후 저장된 토큰 가져오는 함수
     const getToken = () => {
-        return localStorage.getItem('token'); // 쿠키 또는 로컬 스토리지에서 토큰을 가져옴
+        return localStorage.getItem('accessToken'); // 쿠키 또는 로컬 스토리지에서 토큰을 가져옴
     };
     
     // 서버에 정보를 요청하는 함수
@@ -16,7 +16,7 @@ const ProfileEdit = () => {
         console.log('myPage');
         try {
             const token = getToken(); // 토큰 가져오기
-            const response = await axios.get('/api/member/myPage/editProfile', {
+            const response = await axios.get('/api/auth/member/editProfile', {
                 headers: {
                     Authorization: `Bearer ${token}` // 헤더에 토큰 추가
                 }
