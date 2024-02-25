@@ -39,7 +39,7 @@ const SignUp = () => {
         try{
             let response = await axios({
                 method: 'post',
-                url: '/api/auth/signup',
+                url: '/api/sec/signup',
                 headers: {'Content-Type': 'application/json'},
                 data: JSON.stringify(request_data)
             });
@@ -69,7 +69,7 @@ const SignUp = () => {
         try {
             let response = await axios({
                 method: 'get',
-                url: `/api/auth/check?nickname=${nickName}`,
+                url: `/api/sec/check?nickname=${nickName}`,
                 headers: {'Content-Type': 'application/json'},
             });
             if (response.status === 200) {

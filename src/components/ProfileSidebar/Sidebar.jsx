@@ -1,8 +1,9 @@
 import React from 'react'
-import {useLocation } from "react-router-dom";
+import {useLocation, useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
     const location = useLocation();
+    const navigate = useNavigate();
 
     const activePage = (link) => {
         return location.pathname === link ? "nav-link active" : "nav-link link-dark";
@@ -17,7 +18,7 @@ const Sidebar = () => {
     return (
         <div className="col-md-3 col-lg-2 d-flex flex-column flex-shrink-0 p-3" style={{ backgroundColor: "#FBFBF3" }}>
             <a href="/" className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-                <span className="fs-4">뒤로가기버튼</span>
+                <span className="fs-4" onClick={()=> {navigate(-1)}}>←</span>
             </a>
             <hr />
             <ul className="nav nav-pills flex-column mb-auto">

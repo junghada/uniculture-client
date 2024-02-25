@@ -27,7 +27,7 @@ const Header = () => {
         try {
             const token = getToken(); // 토큰 가져오기
             if (token) {
-                const response = await axios.get('/api/auth/home', {
+                const response = await axios.get('/api/auth/sec/home', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
