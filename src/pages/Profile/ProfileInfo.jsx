@@ -34,7 +34,6 @@ const ProfileInfo = () => {
         try {
             const token = getToken(); // 토큰 가져오기
             const response = await axios.get('/api/auth/member/editInformation', {
-            const response = await axios.get('/api/auth/member/editInformation', {
                 headers: {
                     Authorization: `Bearer ${token}` // 헤더에 토큰 추가
                 }
@@ -56,8 +55,6 @@ const ProfileInfo = () => {
     };
     
     useEffect(() => {
-        fetchUserInfo();
-    }, []);
         fetchUserInfo();
     }, []);
 
@@ -88,7 +85,7 @@ const ProfileInfo = () => {
             // 새 비밀번호가 비어있지 않을 경우에만 requestData에 추가
             if (newPassword) {
                 //새 비밀번호와 확인 비밀번호가 다르면 경고 후 함수 종료
-                if(newPassword != checkPassword) {
+                if(newPassword !== checkPassword) {
                     alert("비밀번호를 다시 입력해주세요.");
                     return;
                 }
@@ -113,14 +110,11 @@ const ProfileInfo = () => {
             if (response.status === 200) {
                 alert("수정 완료");
                 window.location.reload();
-            if (response.status === 200) {
-                alert("수정 완료");
-                window.location.reload();
             }
             else if (response.status === 400) {
                 console.error("클라이언트에러");
             }
-            else if (response.status === 400){
+            else if (response.status === 500){
                 console.error("서버에러");
             }
             else alert(response);
@@ -196,7 +190,6 @@ const ProfileInfo = () => {
                         </div>
                         <div className="mb-4 row">
                             <label className="col-sm-3 col-form-label">Email</label>
-                            <label className="col-sm-3 col-form-label">{userInfo?.email}</label>
                             <label className="col-sm-3 col-form-label">{userInfo?.email}</label>
                         </div>
 
@@ -311,19 +304,9 @@ const ProfileInfo = () => {
                                 value={userInfo?.age}
                                 onChange={(e) => setUserInfo({...userInfo, age: parseInt(e.target.value)})}
                             />
-                            <input
-                                className="col-sm-3 col-form-label"
-                                type="text"
-                                name="age"
-                                placeholder="나이 입력"
-                                value={userInfo?.age}
-                                onChange={(e) => setUserInfo({...userInfo, age: parseInt(e.target.value)})}
-                            />
                         </div>
 
                         <div className="mb-4 row justify-content-center">
-                            <button type="button" className="col-sm-1 col-form-label btn btn-outline-secondary" style={{marginRight:"15px"}} onClick={()=>{alert(JSON.stringify(userInfo));}}>취소</button>
-                            <button type="button" className="col-sm-1 col-form-label btn btn-outline-success" onClick={changeInfo}>수정</button>
                             <button type="button" className="col-sm-1 col-form-label btn btn-outline-secondary" style={{marginRight:"15px"}} onClick={()=>{alert(JSON.stringify(userInfo));}}>취소</button>
                             <button type="button" className="col-sm-1 col-form-label btn btn-outline-success" onClick={changeInfo}>수정</button>
                         </div>
