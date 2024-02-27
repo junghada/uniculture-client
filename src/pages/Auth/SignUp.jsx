@@ -4,7 +4,6 @@ import axios from 'axios';
 import {Link, useNavigate} from "react-router-dom";
 import './Auth.css';
 import Swal from "sweetalert2";
-import {AiOutlineLink} from "react-icons/ai";
 
 const SignUp = () => {
     let navigate = useNavigate(); // 다른 component 로 이동할 때 사용
@@ -20,23 +19,45 @@ const SignUp = () => {
     const [passwordsMatch, setPasswordsMatch] = useState(true);
     const [nickNameValid, setNickNameValid] = useState(false);
     const [notAllow, setNotAllow] = useState(true);
-    const [gender, setGender] = useState('male');
+    const [gender, setGender] = useState('');
+
+    const years = Array.from({ length: 2023 - 1940 }, (_, index) => 1940 + index);
+    const months = Array.from({ length: 12 }, (_, index) => index + 1);
+    const days = Array.from({ length: 31 }, (_, index) => index + 1);
+
+    const [selectedYear, setSelectedYear] = useState('출생 연도');
+    const [selectedMonth, setSelectedMonth] = useState('월');
+    const [selectedDay, setSelectedDay] = useState('일');
+    const [age, setAge] = useState(null); // 선택한 생년월일 계산한 나이
 
     const resetInput = () => {
         setEmail('');
         setPw('');
         setPw2('');
         setNickName('');
+        setGender('');
+        setSelectedYear('출생 연도');
+        setSelectedMonth('월');
+        setSelectedDay('일');
     }
 
     const handleInputClick = async (e) => {
         console.log('sing-up');
-        const request_data = { email: email, password: pw, nickname: nickName };
+        const request_data = {
+            email: email,
+            password: pw,
+            nickname: nickName,
+            gender: gender,
+            year: selectedYear,
+            month: selectedMonth,
+            day: selectedDay,
+            age: age
+        };
         console.log('req_data: ', request_data);
         try{
             let response = await axios({
                 method: 'post',
-                url: '/api/auth/signup',
+                url: '/api/sec/signup',
                 headers: {'Content-Type': 'application/json'},
                 data: JSON.stringify(request_data)
             });
@@ -59,10 +80,6 @@ const SignUp = () => {
         }
     }
 
-    const handleGenderChange = (event) => {
-        setGender(event.target.value);
-    };
-
     const nickNameWarning = () => {
         Swal.fire({
             icon: "warning",
@@ -80,7 +97,7 @@ const SignUp = () => {
         try {
             let response = await axios({
                 method: 'get',
-                url: `/api/auth/check?nickname=${nickName}`,
+                url: `/api/sec/check?nickname=${nickName}`,
                 headers: {'Content-Type': 'application/json'},
             });
             if (response.status === 200) {
@@ -141,13 +158,44 @@ const SignUp = () => {
         }
     };
 
+    // 성별 상태 설정
+    const handleGenderChange = (e) => {
+        setGender(e.target.value);
+    };
+
+    // 생년월일 선택한 값으로 상태 설정
+    const handleYearChange = (e) => {
+        setSelectedYear(e.target.value);
+    };
+    const handleMonthChange = (e) => {
+        setSelectedMonth(e.target.value);
+    };
+    const handleDayChange = (e) => {
+        setSelectedDay(e.target.value);
+    };
+
     useEffect(() => {
-        if(emailValid && pwValid && nickNameValid) {
+        if(emailValid && pwValid && nickNameValid && gender && selectedYear !== '출생 연도' && selectedMonth !== '월' && selectedDay !== '일') {
             setNotAllow(false); // 버튼 비활성화 해제
             return;
         }
         setNotAllow(true); // 기본적인 상황: 비활성화
-    }, [emailValid, pwValid, nickNameValid]); // 이메일, 비밀번호 state 값이 변경될 때마다 useEffect 실행
+
+        if (selectedYear !== '출생 연도' && selectedMonth !== '월' && selectedDay !== '일') {
+            const currentDate = new Date(); // 현재 날짜 가져오기
+            const birthDate = new Date(selectedYear, selectedMonth - 1, selectedDay); // 선택한 생년월일로 날짜 설정
+
+            // 나이 계산
+            let age = currentDate.getFullYear() - birthDate.getFullYear();
+            const monthDiff = currentDate.getMonth() - birthDate.getMonth();
+
+            // 만약 현재 날짜의 월이 생일 월보다 전이거나 같지만 일자가 아직 지나지 않았을 경우 나이에서 1을 빼줌
+            if (monthDiff < 0 || (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            setAge(age);
+        }
+    }, [emailValid, pwValid, nickNameValid, gender, selectedYear, selectedMonth, selectedDay]); // 이메일, 비밀번호 등 state 값이 변경될 때마다 useEffect 실행
 
     // 비밀번호 토글 함수
     const toggleShowPassword = () => {
@@ -156,9 +204,6 @@ const SignUp = () => {
     const toggleShowPassword2 = () => {
         setShowPassword2(!showPassword2);
     };
-
-
-
 
     return (
         <div style={{ backgroundColor: '#FBFBF3', minHeight: '100vh' }}>
@@ -211,8 +256,8 @@ const SignUp = () => {
                 <label className="radio-style">
                     <input
                         type="radio"
-                        value="male"
-                        checked={gender === 'male'}
+                        value="MAN"
+                        checked={gender === 'MAN'}
                         onChange={handleGenderChange}
                     />
                     <span className="radio-text">남성</span>
@@ -220,12 +265,34 @@ const SignUp = () => {
                 <label className="radio-style">
                     <input
                         type="radio"
-                        value="female"
-                        checked={gender === 'female'}
+                        value="WOMAN"
+                        checked={gender === 'WOMAN'}
                         onChange={handleGenderChange}
                     />
                     <span className="radio-text">여성</span>
                 </label>
+                <div>{gender}</div>
+
+                <div className="inputTitle">생년월일</div>
+                <div className="info" id="info__birth">
+                    <select className="box" id="birth-year" value={selectedYear} onChange={handleYearChange}>
+                        <option disabled selected>출생 연도</option>
+                        {years.map(year => <option key={year} value={year}>{year}</option>)}
+                    </select>
+                    <select className="box" id="birth-month" value={selectedMonth} onChange={handleMonthChange}>
+                        <option disabled selected>월</option>
+                        {months.map(month => <option key={month} value={month}>{month}</option>)}
+                    </select>
+                    <select className="box" id="birth-day" value={selectedDay} onChange={handleDayChange}>
+                        <option disabled selected>일</option>
+                        {days.map(day => <option key={day} value={day}>{day}</option>)}
+                    </select>
+                </div>
+
+                {/*<div>
+                    선택한 생년월일: {selectedYear && selectedMonth && selectedDay ? `${selectedYear}년 ${selectedMonth}월 ${selectedDay}일` : '생년월일을 선택해주세요'}
+                </div>*/}
+                <div><div> 나이: {age}세</div></div>
 
                 <div className="inputTitle">닉네임</div>
                 <div className="inputWrap" style={{padding: '10px'}}>

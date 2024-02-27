@@ -33,6 +33,7 @@
 
 .inputTitle {
     margin-top: 35px;
+    margin-bottom: 9px;
     font-size: 14px;
     font-weight: 550;
     color: #262626;
@@ -43,10 +44,9 @@
     justify-content: space-between;
     border-radius: 8px;
     padding: 17px;
-    margin-top: 8px;
     margin-bottom: 5px;
     background-color: white;
-    border: 1px solid #e2e0e0;
+    border: 1px solid #d9d6d6;/*e2e0e0*/
 }
 
 .inputWrap:focus-within {
@@ -191,8 +191,7 @@
 .radio-style {
     font-size: 16px;
     font-weight: 530;
-    padding: 0.5em 0.7em;
-    line-height: 2rem;
+    padding: 0.1em 0.7em;
 }
 
 .radio-style:hover {
@@ -226,3 +225,57 @@
     cursor: pointer;
 }
 
+
+select.box {
+    width: 100%;
+    height: 50px;
+    box-sizing: border-box;
+    margin-left: 5px;
+    padding: 5px 0 5px 10px;
+    border-radius: 8px;
+    border: 1px solid #d9d6d6;
+    color: #383838;
+    background-color: #ffffff;
+    font-family: 'Montserrat', 'Pretendard', sans-serif;
+}
+
+select.box:focus-within {
+    border: 2px solid #B3C693;
+}
+
+option {
+    font-size: 16px;
+    color: #383838;
+}
+
+.info .box#domain-list option {
+    font-size: 14px;
+    background-color: #ffffff;
+    border: 2px solid #B3C693;
+}
+
+.info#info__birth {
+    display: flex;
+}
+
+.info#info__birth select {
+    margin-left : 7px;
+}
+
+.info#info__birth select:first-child {
+    margin-left : 0px;
+}
+
+.info#info__birth select::-webkit-scrollbar {
+    width: 10px;
+}
+
+.info#info__birth select::-webkit-scrollbar-thumb {
+    background-color: #b6b6b6;
+    border-radius: 3px;
+}
+
+.info#info__birth select::-webkit-scrollbar-track {
+    background-color: #ebe9e9;
+    border-radius: 6px;
+}

@@ -19,7 +19,7 @@ const SignIn = () => {
         console.log('Login start');
         try {
             const response = await axios.post(
-                'api/auth/login',
+                'api/sec/login',
                 {
                     email: email,
                     password: pw,
