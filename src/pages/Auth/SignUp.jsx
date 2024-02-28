@@ -21,13 +21,12 @@ const SignUp = () => {
     const [notAllow, setNotAllow] = useState(true);
     const [gender, setGender] = useState('');
 
-    const years = Array.from({ length: 2023 - 1940 }, (_, index) => 1940 + index);
-    const months = Array.from({ length: 12 }, (_, index) => index + 1);
-    const days = Array.from({ length: 31 }, (_, index) => index + 1);
-
-    const [selectedYear, setSelectedYear] = useState('출생 연도');
-    const [selectedMonth, setSelectedMonth] = useState('월');
-    const [selectedDay, setSelectedDay] = useState('일');
+    const [isYearOptionExisted, setIsYearOptionExisted] = useState(false);
+    const [isMonthOptionExisted, setIsMonthOptionExisted] = useState(false);
+    const [isDayOptionExisted, setIsDayOptionExisted] = useState(false);
+    const [selectedYear, setSelectedYear] = useState(null);
+    const [selectedMonth, setSelectedMonth] = useState(null);
+    const [selectedDay, setSelectedDay] = useState(null);
     const [age, setAge] = useState(null); // 선택한 생년월일 계산한 나이
 
     const resetInput = () => {
@@ -36,9 +35,21 @@ const SignUp = () => {
         setPw2('');
         setNickName('');
         setGender('');
-        setSelectedYear('출생 연도');
-        setSelectedMonth('월');
-        setSelectedDay('일');
+        setIsYearOptionExisted(false);
+        setIsMonthOptionExisted(false);
+        setIsDayOptionExisted(false);
+        setSelectedYear(null);
+        setSelectedMonth(null);
+        setSelectedDay(null);
+        setAge(null);
+
+        // select 박스 초기화
+        const yearSelect = document.getElementById('birth-year');
+        const monthSelect = document.getElementById('birth-month');
+        const daySelect = document.getElementById('birth-day');
+        if (yearSelect) yearSelect.selectedIndex = 0;
+        if (monthSelect) monthSelect.selectedIndex = 0;
+        if (daySelect) daySelect.selectedIndex = 0;
     }
 
     const handleInputClick = async (e) => {
@@ -163,25 +174,42 @@ const SignUp = () => {
         setGender(e.target.value);
     };
 
+    // 생년월일 드롭다운 처음 포커스 할 때 드롭다운 옵션 동적으로 생성
+    const handleFocusYear = () => {
+        if (!isYearOptionExisted) {
+            setIsYearOptionExisted(true);
+        }
+    };
+    const handleFocusMonth = () => {
+        if (!isMonthOptionExisted) {
+            setIsMonthOptionExisted(true);
+        }
+    };
+    const handleFocusDay = () => {
+        if (!isDayOptionExisted) {
+            setIsDayOptionExisted(true);
+        }
+    };
+
     // 생년월일 선택한 값으로 상태 설정
     const handleYearChange = (e) => {
-        setSelectedYear(e.target.value);
+        setSelectedYear(parseInt(e.target.value));
     };
     const handleMonthChange = (e) => {
-        setSelectedMonth(e.target.value);
+        setSelectedMonth(parseInt(e.target.value));
     };
     const handleDayChange = (e) => {
-        setSelectedDay(e.target.value);
+        setSelectedDay(parseInt(e.target.value));
     };
 
     useEffect(() => {
-        if(emailValid && pwValid && nickNameValid && gender && selectedYear !== '출생 연도' && selectedMonth !== '월' && selectedDay !== '일') {
+        if(emailValid && pwValid && nickNameValid && gender && selectedYear && selectedMonth && selectedDay) {
             setNotAllow(false); // 버튼 비활성화 해제
             return;
         }
         setNotAllow(true); // 기본적인 상황: 비활성화
 
-        if (selectedYear !== '출생 연도' && selectedMonth !== '월' && selectedDay !== '일') {
+        if (selectedYear && selectedMonth && selectedDay) {
             const currentDate = new Date(); // 현재 날짜 가져오기
             const birthDate = new Date(selectedYear, selectedMonth - 1, selectedDay); // 선택한 생년월일로 날짜 설정
 
@@ -275,23 +303,37 @@ const SignUp = () => {
 
                 <div className="inputTitle">생년월일</div>
                 <div className="info" id="info__birth">
-                    <select className="box" id="birth-year" value={selectedYear} onChange={handleYearChange}>
+                    <select className="box" id="birth-year" onFocus={handleFocusYear} onChange={handleYearChange}>
                         <option disabled selected>출생 연도</option>
-                        {years.map(year => <option key={year} value={year}>{year}</option>)}
+                        {isYearOptionExisted && (
+                            Array.from({ length: 2023 - 1940 }, (_, index) => {
+                                const year = 1940 + index;
+                                return <option key={year} value={year}>{year}</option>;
+                            })
+                        )}
                     </select>
-                    <select className="box" id="birth-month" value={selectedMonth} onChange={handleMonthChange}>
+                    <select className="box" id="birth-month" onFocus={handleFocusMonth} onChange={handleMonthChange}>
                         <option disabled selected>월</option>
-                        {months.map(month => <option key={month} value={month}>{month}</option>)}
+                        {isMonthOptionExisted && (
+                            Array.from({ length: 12 }, (_, index) => {
+                                const month = index + 1;
+                                return <option key={month} value={month}>{month}</option>;
+                            })
+                        )}
                     </select>
-                    <select className="box" id="birth-day" value={selectedDay} onChange={handleDayChange}>
+                    <select className="box" id="birth-day" onFocus={handleFocusDay} onChange={handleDayChange}>
                         <option disabled selected>일</option>
-                        {days.map(day => <option key={day} value={day}>{day}</option>)}
+                        {isDayOptionExisted && (
+                            Array.from({ length: 31 }, (_, index) => {
+                                const day = index + 1;
+                                return <option key={day} value={day}>{day}</option>;
+                            })
+                        )}
                     </select>
                 </div>
-
-                {/*<div>
+                <div>
                     선택한 생년월일: {selectedYear && selectedMonth && selectedDay ? `${selectedYear}년 ${selectedMonth}월 ${selectedDay}일` : '생년월일을 선택해주세요'}
-                </div>*/}
+                </div>
                 <div><div> 나이: {age}세</div></div>
 
                 <div className="inputTitle">닉네임</div>
