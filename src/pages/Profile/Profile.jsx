@@ -3,9 +3,11 @@ import { IoIosSettings } from "react-icons/io";
 import styles from './Profile.module.css';
 import Layout from "../../components/Layout";
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import Swal from "sweetalert2";
 
 const Profile = () => {
+    let navigate = useNavigate(); // 다른 component 로 이동할 때 사용
     const [userInfo, setUserInfo] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [friends, setFriends] = useState([]); //친구 목록
@@ -14,6 +16,16 @@ const Profile = () => {
     // 로그인 후 저장된 토큰 가져오는 함수
     const getToken = () => {
         return localStorage.getItem('accessToken'); // 쿠키 또는 로컬 스토리지에서 토큰을 가져옴
+    };
+
+    const logInWarning = () => {
+        Swal.fire({
+            icon: "warning",
+            title: "주의",
+            text: "로그인 후 이용해주세요!",
+            confirmButtonColor: "#8BC765",
+            confirmButtonText: "확인",
+        });
     };
 
     // 서버에 정보를 요청하는 함수
@@ -36,6 +48,12 @@ const Profile = () => {
                 console.log('서버 응답 오류:', response.status);
             }
         } catch (error) {
+            if(error.response.status === 500) {
+                console.log('500 start');
+                logInWarning();
+                navigate("/sign-in", {}) // 로그인하지 않은 사용자가 프로필 조회 시 로그인 페이지로 이동
+                console.log('500 end');
+            }
             console.error('사용자 정보를 가져오는 도중 오류 발생:', error);
         }
     };

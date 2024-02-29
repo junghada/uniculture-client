@@ -1,10 +1,9 @@
 //회원 가입 페이지
 import React, {useEffect, useState} from "react"
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import './Auth.css';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import Swal from "sweetalert2";
 
 const SignUp = () => {
     let navigate = useNavigate(); // 다른 component 로 이동할 때 사용
@@ -20,21 +19,51 @@ const SignUp = () => {
     const [passwordsMatch, setPasswordsMatch] = useState(true);
     const [nickNameValid, setNickNameValid] = useState(false);
     const [notAllow, setNotAllow] = useState(true);
+    const [gender, setGender] = useState('');
 
-    const [show, setShow] = useState(false); // 모달창
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const [isYearOptionExisted, setIsYearOptionExisted] = useState(false);
+    const [isMonthOptionExisted, setIsMonthOptionExisted] = useState(false);
+    const [isDayOptionExisted, setIsDayOptionExisted] = useState(false);
+    const [selectedYear, setSelectedYear] = useState(null);
+    const [selectedMonth, setSelectedMonth] = useState(null);
+    const [selectedDay, setSelectedDay] = useState(null);
+    const [age, setAge] = useState(null); // 선택한 생년월일 계산한 나이
 
     const resetInput = () => {
         setEmail('');
         setPw('');
         setPw2('');
         setNickName('');
+        setGender('');
+        setIsYearOptionExisted(false);
+        setIsMonthOptionExisted(false);
+        setIsDayOptionExisted(false);
+        setSelectedYear(null);
+        setSelectedMonth(null);
+        setSelectedDay(null);
+        setAge(null);
+
+        // select 박스 초기화
+        const yearSelect = document.getElementById('birth-year');
+        const monthSelect = document.getElementById('birth-month');
+        const daySelect = document.getElementById('birth-day');
+        if (yearSelect) yearSelect.selectedIndex = 0;
+        if (monthSelect) monthSelect.selectedIndex = 0;
+        if (daySelect) daySelect.selectedIndex = 0;
     }
 
     const handleInputClick = async (e) => {
         console.log('sing-up');
-        const request_data = { email: email, password: pw, nickname: nickName };
+        const request_data = {
+            email: email,
+            password: pw,
+            nickname: nickName,
+            gender: gender,
+            year: selectedYear,
+            month: selectedMonth,
+            day: selectedDay,
+            age: age
+        };
         console.log('req_data: ', request_data);
         try{
             let response = await axios({
@@ -47,7 +76,7 @@ const SignUp = () => {
             console.log('response.status: ', response.status);
             if(response.status === 200) {
                 alert("회원가입이 완료되었습니다!")
-                //navigate("/", {});
+                navigate("/", {});
             }
             else if(response.status === 400) {
                 alert("이미 가입한 이메일입니다.")
@@ -61,6 +90,16 @@ const SignUp = () => {
             resetInput();
         }
     }
+
+    const nickNameWarning = () => {
+        Swal.fire({
+            icon: "warning",
+            title: "닉네임 중복",
+            html: "이미 사용 중인 닉네임입니다. <br>다른 닉네임을 사용해주세요.",
+            confirmButtonColor: "#8BC765",
+            confirmButtonText: "확인",
+        });
+    };
 
     // 닉네임 중복 검사
     const handleNickName = async (e) => {
@@ -77,7 +116,7 @@ const SignUp = () => {
                 setNickNameValid(true); // 닉네임이 유효하다는 것을 나타냄
             } else {
                 setNickNameValid(false); // 닉네임이 유효하지 않다는 것을 나타냄
-                handleShow();
+                nickNameWarning();
             }
         } catch (err) {
             console.error(err);
@@ -130,13 +169,61 @@ const SignUp = () => {
         }
     };
 
+    // 성별 상태 설정
+    const handleGenderChange = (e) => {
+        setGender(e.target.value);
+    };
+
+    // 생년월일 드롭다운 처음 포커스 할 때 드롭다운 옵션 동적으로 생성
+    const handleFocusYear = () => {
+        if (!isYearOptionExisted) {
+            setIsYearOptionExisted(true);
+        }
+    };
+    const handleFocusMonth = () => {
+        if (!isMonthOptionExisted) {
+            setIsMonthOptionExisted(true);
+        }
+    };
+    const handleFocusDay = () => {
+        if (!isDayOptionExisted) {
+            setIsDayOptionExisted(true);
+        }
+    };
+
+    // 생년월일 선택한 값으로 상태 설정
+    const handleYearChange = (e) => {
+        setSelectedYear(parseInt(e.target.value));
+    };
+    const handleMonthChange = (e) => {
+        setSelectedMonth(parseInt(e.target.value));
+    };
+    const handleDayChange = (e) => {
+        setSelectedDay(parseInt(e.target.value));
+    };
+
     useEffect(() => {
-        if(emailValid && pwValid && nickNameValid) {
+        if(emailValid && pwValid && nickNameValid && gender && selectedYear && selectedMonth && selectedDay) {
             setNotAllow(false); // 버튼 비활성화 해제
             return;
         }
         setNotAllow(true); // 기본적인 상황: 비활성화
-    }, [emailValid, pwValid, nickNameValid]); // 이메일, 비밀번호 state 값이 변경될 때마다 useEffect 실행
+
+        if (selectedYear && selectedMonth && selectedDay) {
+            const currentDate = new Date(); // 현재 날짜 가져오기
+            const birthDate = new Date(selectedYear, selectedMonth - 1, selectedDay); // 선택한 생년월일로 날짜 설정
+
+            // 나이 계산
+            let age = currentDate.getFullYear() - birthDate.getFullYear();
+            const monthDiff = currentDate.getMonth() - birthDate.getMonth();
+
+            // 만약 현재 날짜의 월이 생일 월보다 전이거나 같지만 일자가 아직 지나지 않았을 경우 나이에서 1을 빼줌
+            if (monthDiff < 0 || (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            setAge(age);
+        }
+    }, [emailValid, pwValid, nickNameValid, gender, selectedYear, selectedMonth, selectedDay]); // 이메일, 비밀번호 등 state 값이 변경될 때마다 useEffect 실행
 
     // 비밀번호 토글 함수
     const toggleShowPassword = () => {
@@ -146,15 +233,16 @@ const SignUp = () => {
         setShowPassword2(!showPassword2);
     };
 
-
     return (
         <div style={{ backgroundColor: '#FBFBF3', minHeight: '100vh' }}>
             <div className="auth-layout">
-                <div className="title">회원가입</div>
+                {/*<div className="title">회원가입</div>*/}
+                <div className="title"><Link to={"/"} style={{ color: "#04B404", textDecoration: "none"}}>UniCulture</Link></div>
                 <div className="sub-title">나의 성장을 돕는 언어교류 플랫폼
-                    <span style={{color: '#8BC765'}}> UniCulture</span></div>
+                    {/*<span style={{color: '#8BC765'}}> UniCulture</span>*/}
+                </div>
 
-                <div className="inputTitle">✉️ 이메일</div>
+                <div className="inputTitle">이메일</div>
                 <div className="inputWrap">
                     <input className="input" type="email" placeholder="test@example.com" value={email} onChange={handleEmail}/>
                 </div>
@@ -164,7 +252,7 @@ const SignUp = () => {
                     )}
                 </div>
 
-                <div className="inputTitle">🔒 비밀번호</div>
+                <div className="inputTitle">비밀번호</div>
                 <div className="inputWrap">
                     <input className="input" type={showPassword ? "text" : "password"} placeholder="영문, 숫자, 특수문자 포함 8자 이상" value={pw} onChange={handlePw}/>
                 </div>
@@ -173,12 +261,12 @@ const SignUp = () => {
                         <div>영문, 숫자, 특수문자 포함 8자 이상 입력해주세요.</div>
                     )}
                 </div>
-                <label>
-                    <input type='checkbox' className="custom-checkbox" onChange={toggleShowPassword} />
+                <label className="checkbox-hover">
+                    <input type="checkbox" onChange={toggleShowPassword} />
                     <span className="pwCheck">비밀번호 보기</span>
                 </label>
 
-                <div className="inputTitle">⚠️ 비밀번호 확인</div>
+                <div className="inputTitle">비밀번호 확인</div>
                 <div className="inputWrap">
                     <input className="input" type={showPassword2 ? "text" : "password"} placeholder="영문, 숫자, 특수문자 포함 8자 이상" value={pw2} onChange={handlePw2}/>
                 </div>
@@ -187,12 +275,68 @@ const SignUp = () => {
                         <div>비밀번호가 일치하지 않습니다.</div>
                     )}
                 </div>
-                <label>
-                    <input type='checkbox' className="custom-checkbox" onChange={toggleShowPassword2} />
+                <label className="checkbox-hover">
+                    <input type="checkbox" onChange={toggleShowPassword2} />
                     <span className="pwCheck">비밀번호 보기</span>
                 </label>
 
-                <div className="inputTitle">🌏 닉네임</div>
+                <div className="inputTitle">성별</div>
+                <label className="radio-style">
+                    <input
+                        type="radio"
+                        value="MAN"
+                        checked={gender === 'MAN'}
+                        onChange={handleGenderChange}
+                    />
+                    <span className="radio-text">남성</span>
+                </label>
+                <label className="radio-style">
+                    <input
+                        type="radio"
+                        value="WOMAN"
+                        checked={gender === 'WOMAN'}
+                        onChange={handleGenderChange}
+                    />
+                    <span className="radio-text">여성</span>
+                </label>
+                <div>{gender}</div>
+
+                <div className="inputTitle">생년월일</div>
+                <div className="info" id="info__birth">
+                    <select className="box" id="birth-year" onFocus={handleFocusYear} onChange={handleYearChange}>
+                        <option disabled selected>출생 연도</option>
+                        {isYearOptionExisted && (
+                            Array.from({ length: 2023 - 1940 }, (_, index) => {
+                                const year = 1940 + index;
+                                return <option key={year} value={year}>{year}</option>;
+                            })
+                        )}
+                    </select>
+                    <select className="box" id="birth-month" onFocus={handleFocusMonth} onChange={handleMonthChange}>
+                        <option disabled selected>월</option>
+                        {isMonthOptionExisted && (
+                            Array.from({ length: 12 }, (_, index) => {
+                                const month = index + 1;
+                                return <option key={month} value={month}>{month}</option>;
+                            })
+                        )}
+                    </select>
+                    <select className="box" id="birth-day" onFocus={handleFocusDay} onChange={handleDayChange}>
+                        <option disabled selected>일</option>
+                        {isDayOptionExisted && (
+                            Array.from({ length: 31 }, (_, index) => {
+                                const day = index + 1;
+                                return <option key={day} value={day}>{day}</option>;
+                            })
+                        )}
+                    </select>
+                </div>
+                <div>
+                    선택한 생년월일: {selectedYear && selectedMonth && selectedDay ? `${selectedYear}년 ${selectedMonth}월 ${selectedDay}일` : '생년월일을 선택해주세요'}
+                </div>
+                <div><div> 나이: {age}세</div></div>
+
+                <div className="inputTitle">닉네임</div>
                 <div className="inputWrap" style={{padding: '10px'}}>
                     <input className="input" type="text" placeholder="닉네임을 입력하세요" style={{width: '80%', marginTop: '9px'}} value={nickName} onChange={changeNickName}/>
                     <button className='nickNameButton' onClick={handleNickName}>중복확인</button>
@@ -204,16 +348,6 @@ const SignUp = () => {
                 </div>
                 <button disabled={notAllow} className="authButton" onClick={handleInputClick}>가입하기</button>
 
-                <Button variant="primary" onClick={handleShow}>
-                    modal test
-                </Button>
-                <Modal show={show} onHide={handleClose} centered>
-                    <Modal.Title style={{paddingTop: '33px', paddingBottom: '20px'}}>닉네임 중복</Modal.Title>
-                    <Modal.Body>이미 사용 중인 닉네임입니다. <br/>다른 닉네임을 사용해주세요.</Modal.Body>
-                    <Button variant="secondary" onClick={handleClose} style={{backgroundColor: '#8BC765', border: 'none', marginBottom: '13px', padding: '7px 20px'}}>
-                        확인
-                    </Button>
-                </Modal>
             </div>
         </div>
     )

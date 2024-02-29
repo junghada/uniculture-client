@@ -16,14 +16,15 @@
 .title {
     padding-top: 60px;
     text-align: center;
-    font-size: 27px;
-    font-weight: 700;
-    padding-bottom: 30px;
+    font-size: 30px;
+    font-weight: 800;
+    padding-bottom: 20px;
     /*line-height: 9.5;*/ /*글 간격*/
+    color: #04B404;
 }
 
 .sub-title {
-    margin-bottom: 41px;
+    margin-bottom: 55px;
     text-align: center;
     font-size: 16px;
     font-weight: 550;
@@ -31,7 +32,8 @@
 }
 
 .inputTitle {
-    margin-top: 25px;
+    margin-top: 35px;
+    margin-bottom: 9px;
     font-size: 14px;
     font-weight: 550;
     color: #262626;
@@ -42,10 +44,9 @@
     justify-content: space-between;
     border-radius: 8px;
     padding: 17px;
-    margin-top: 8px;
     margin-bottom: 5px;
     background-color: white;
-    border: 1px solid #e2e0e0;
+    border: 1px solid #d9d6d6;/*e2e0e0*/
 }
 
 .inputWrap:focus-within {
@@ -112,18 +113,29 @@
     font-size: 13.5px;
 }
 
+[type="checkbox"] {
+    border: 1.5px solid dimgrey;
+    border-radius: 20%;
+    width: 0.75em;
+    height: 0.75em;
+    accent-color: #89DE55;
+    margin-left: 5px;
+}
+
+[type="checkbox"]:hover {
+    box-shadow: 0 0 3px 1px lightgrey;
+    cursor: pointer;
+}
+
+.checkbox-hover {
+    cursor: pointer;
+}
+
 .signUpText {
     text-align: right;
     margin-top: 17px;
     font-size: 15px;
     padding-bottom: 50px;
-}
-
-.custom-checkbox {
-    margin-top: 10px;
-    accent-color: #89DE55;
-    border-color: lightgray !important;
-    margin-left: 5px;
 }
 
 .nickNameButton {
@@ -174,4 +186,96 @@
 .modal-content button {
     cursor: pointer;
     padding: 8px;
+}
+
+.radio-style {
+    font-size: 16px;
+    font-weight: 530;
+    padding: 0.1em 0.7em;
+}
+
+.radio-style:hover {
+    cursor: pointer;
+}
+
+.radio-text {
+    padding-left: 5px;
+}
+
+[type="radio"] {
+    appearance: none;
+    border: 1.5px solid gray;
+    border-radius: 50%;
+    width: 0.8em;
+    height: 0.8em;
+    transition: border 0.2s ease-in-out;
+}
+
+[type="radio"]:checked {
+    border: 0.25em solid #5FB404;
+}
+
+[type="radio"]:focus-visible {
+    outline: 1px dotted #5FB404;
+    outline-offset: 1px;
+}
+
+[type="radio"]:hover {
+    box-shadow: 0 0 1px 2px lightgrey;
+    cursor: pointer;
+}
+
+
+select.box {
+    width: 100%;
+    height: 50px;
+    box-sizing: border-box;
+    margin-left: 5px;
+    padding: 5px 0 5px 10px;
+    border-radius: 8px;
+    border: 1px solid #d9d6d6;
+    color: #383838;
+    background-color: #ffffff;
+    font-family: 'Montserrat', 'Pretendard', sans-serif;
+}
+
+select.box:focus-within {
+    border: 2px solid #B3C693;
+}
+
+option {
+    font-size: 16px;
+    color: #383838;
+}
+
+.info .box#domain-list option {
+    font-size: 14px;
+    background-color: #ffffff;
+    border: 2px solid #B3C693;
+}
+
+.info#info__birth {
+    display: flex;
+}
+
+.info#info__birth select {
+    margin-left : 7px;
+}
+
+.info#info__birth select:first-child {
+    margin-left : 0px;
+}
+
+.info#info__birth select::-webkit-scrollbar {
+    width: 10px;
+}
+
+.info#info__birth select::-webkit-scrollbar-thumb {
+    background-color: #b6b6b6;
+    border-radius: 3px;
+}
+
+.info#info__birth select::-webkit-scrollbar-track {
+    background-color: #ebe9e9;
+    border-radius: 6px;
 }
