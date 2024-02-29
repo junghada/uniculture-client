@@ -2,10 +2,14 @@ import Layout from "../../components/Layout";
 import Sidebar from "../../components/ProfileSidebar/Sidebar";
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 const ProfileDelete = () => {
     const [userInfo, setUserInfo] = useState(null);
+    const [deleteInput, setDeleteInput] = useState('');
     const [isModalOpened, setIsModalOpened] = useState(false);
+    
+    const navigate = useNavigate();
 
     const handleModal = () => {
         setIsModalOpened(!isModalOpened);
@@ -13,21 +17,22 @@ const ProfileDelete = () => {
 
     // 로그인 후 저장된 토큰 가져오는 함수
     const getToken = () => {
-    return localStorage.getItem('token'); // 쿠키 또는 로컬 스토리지에서 토큰을 가져옴
+    return localStorage.getItem('accessToken'); // 쿠키 또는 로컬 스토리지에서 토큰을 가져옴
     };
 
-    // 서버에 정보를 요청하는 함수
-    const fetchUserInfo = async () => {
-        console.log('myPage');
+    // 회원 삭제
+    const deleteUser = async () => {
+        console.log('deleteUser');
         try {
             const token = getToken(); // 토큰 가져오기
-            const response = await axios.get('/api/member/myPage/editProfile', {
+            const response = await axios.delete('/api/auth/member', {
             headers: {
                 Authorization: `Bearer ${token}` // 헤더에 토큰 추가
             }
             });
             if(response.status === 200) {
-                setUserInfo(response.data); // 서버에서 받은 사용자 정보 반환
+                alert("회원이 삭제되었습니다.");
+                navigate('/');
             }
             else if(response.status === 400) {
                 console.log('클라이언트 에러(입력 형식 불량)');
@@ -40,10 +45,6 @@ const ProfileDelete = () => {
             throw error;
         }
     };
-
-    // useEffect(() => {
-    //     fetchUserInfo();
-    // }, [])
 
     return (
         <Layout>
@@ -72,11 +73,20 @@ const ProfileDelete = () => {
                             </div>
                             <div className="modal-body">
                                 탈퇴하기 입력 후 '탈퇴'버튼을 클릭하면 탈퇴됩니다.
-                                <div style={{textAlign:"center", marginTop:"20px"}}><input placeholder="탈퇴하기"></input></div>
+                                <div style={{textAlign:"center", marginTop:"20px"}}><input placeholder="탈퇴하기"onChange={(e)=>{setDeleteInput(e.target.value)}}/></div>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleModal}>닫기</button>
-                                <button type="button" className="btn btn-primary">탈퇴</button>
+                                <button type="button" className="btn btn-primary" 
+                                    onClick={()=>{
+                                        if(deleteInput==="탈퇴하기"){
+                                            deleteUser();
+                                        }
+                                        else {
+                                            alert("'탈퇴하기'를 입력해주세요.");
+                                        }
+                                    }}
+                                >탈퇴</button>
                             </div>
                         </div>
                     </div>
