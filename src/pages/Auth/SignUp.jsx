@@ -1,12 +1,14 @@
 //회원 가입 페이지
 import React, {useEffect, useState} from "react"
 import axios from 'axios';
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import './Auth.css';
 import Swal from "sweetalert2";
+import { IoArrowBack } from "react-icons/io5";
 
 const SignUp = () => {
-    let navigate = useNavigate(); // 다른 component 로 이동할 때 사용
+    const navigate = useNavigate(); // 다른 component 로 이동할 때 사용
+    const location = useLocation();
     const [email, setEmail] = useState('');
     const [pw, setPw] = useState('');
     const [pw2, setPw2] = useState('');
@@ -233,8 +235,15 @@ const SignUp = () => {
         setShowPassword2(!showPassword2);
     };
 
+    // IoArrowBack 클릭 시 이전 경로로 이동
+    const goBackToPreviousPath = () => {
+        const previousPath = location.state?.from || "/"; // 이전 경로가 없으면 기본 경로는 "/"
+        navigate(previousPath, {}); // 이전 페이지로 이동
+    };
+
     return (
         <div style={{ backgroundColor: '#FBFBF3', minHeight: '100vh' }}>
+            <IoArrowBack style={{ fontSize: '25px', marginTop: '20px', marginLeft: '20px'}} onClick={goBackToPreviousPath}/>
             <div className="auth-layout">
                 {/*<div className="title">회원가입</div>*/}
                 <div className="title"><Link to={"/"} style={{ color: "#04B404", textDecoration: "none"}}>UniCulture</Link></div>

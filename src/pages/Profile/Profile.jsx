@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import { IoIosSettings } from "react-icons/io";
 import styles from './Profile.module.css';
 import Layout from "../../components/Layout";
@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import Swal from "sweetalert2";
 
 const Profile = () => {
-    let navigate = useNavigate(); // 다른 component 로 이동할 때 사용
+    const location = useLocation();
     const [userInfo, setUserInfo] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [friends, setFriends] = useState([]); //친구 목록
@@ -32,27 +32,27 @@ const Profile = () => {
     const fetchUserInfo = async () => {
         try {
             const token = getToken(); // 토큰 가져오기
-            if (!token) {
+            /*if (!token) {
                 // 토큰이 없으면 로그인 페이지로 이동
                 navigate('/sign-in');
                 return;
-            }
+            }*/
             const response = await axios.get('/api/auth/member/myPage', {
                 headers: {
                     Authorization: `Bearer ${token}` // 헤더에 토큰 추가
                 }
             });
             if (response.status === 200) {
+                console.log("200 성공");
                 setUserInfo(response.data); // 서버에서 받은 사용자 정보 저장
             } else {
                 console.log('서버 응답 오류:', response.status);
             }
         } catch (error) {
-            if(error.response.status === 500) {
-                console.log('500 start');
+            if(error.response.status === 401) {
+                console.log("401오류2");
                 logInWarning();
-                navigate("/sign-in", {}) // 로그인하지 않은 사용자가 프로필 조회 시 로그인 페이지로 이동
-                console.log('500 end');
+                navigate("/sign-in", {state : {from : location.pathname}}); // 로그인하지 않은 사용자가 프로필 조회 시 로그인 페이지로 이동
             }
             console.error('사용자 정보를 가져오는 도중 오류 발생:', error);
         }
