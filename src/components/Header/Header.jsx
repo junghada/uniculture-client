@@ -6,7 +6,6 @@ import "../PageLayout/PageLayout.css"
 
 const Header = () => {
     const [isNavOpen, setNavOpen] = useState(false);
-    const [isLogin, setIsLogin] = useState(false); // 로그인 상태 저장
 
     useEffect(() => {
         loginCheck(); // 컴포넌트가 마운트될 때 로그인 상태 확인
@@ -20,7 +19,7 @@ const Header = () => {
 
     const removeToken = () => {
         localStorage.removeItem('accessToken'); // 로컬 스토리지에서 토큰 가져옴
-        setIsLogin(false);
+        // setIsLogin(false);
     };
     const loginCheck = async () => {
         console.log('loginCheck');
@@ -32,18 +31,9 @@ const Header = () => {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                if (response.status === 200) {
-                    setIsLogin(true); // 로그인 상태 업데이트
-                }
-                else {
-                    setIsLogin(false);
-                }
-            } else {
-                setIsLogin(false); // 토큰이 없을 경우
             }
         } catch (error) {
             console.error('Login Error:', error);
-            setIsLogin(false);
         }
     };
 
@@ -71,7 +61,7 @@ const Header = () => {
                         </Link>
                     </div>
 
-                    {isLogin ? (
+                    {getToken() ? (
                         <button className={`btn nav-link ms-auto order-lg-last`} onClick={removeToken} style={{ backgroundColor: "#B3C693", padding: "5px 15px", marginRight: "10px"}}>
                             로그아웃
                         </button>

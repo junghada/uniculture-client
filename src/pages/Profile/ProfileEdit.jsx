@@ -30,12 +30,6 @@ const ProfileEdit = () => {
             });
             if(response.status === 200) {
                 setUserInfo(response.data); // 서버에서 받은 사용자 정보 반환
-                setUserInfo({
-                    ...userInfo,
-                    introduce:"안녕하세요.",
-                    myHobbyList: ["요리", "산책"],
-                    myLanguages:{"한국어":"80", "일본어":"40"}
-                });
             }
             else if(response.status === 400) {
                 console.log('클라이언트 에러(입력 형식 불량)');
@@ -50,13 +44,7 @@ const ProfileEdit = () => {
     };
     
     useEffect(() => {
-        // fetchUserInfo();
-        setUserInfo({
-            introduce:"안녕하세요.",
-            myHobbyList: ["요리", "산책"],
-            myLanguages:{"한국어":80, "일본어":38},
-            wantLanguage:{"중국어":50}
-        });
+        fetchUserInfo();
     }, [])
 
     //회원정보 수정

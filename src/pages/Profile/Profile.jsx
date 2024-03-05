@@ -7,7 +7,6 @@ import React, { useState, useEffect } from 'react';
 import Swal from "sweetalert2";
 
 const Profile = () => {
-    let navigate = useNavigate(); // 다른 component 로 이동할 때 사용
     const [userInfo, setUserInfo] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [friends, setFriends] = useState([]); //친구 목록
@@ -17,7 +16,7 @@ const Profile = () => {
     const getToken = () => {
         return localStorage.getItem('accessToken'); // 쿠키 또는 로컬 스토리지에서 토큰을 가져옴
     };
-
+    
     const logInWarning = () => {
         Swal.fire({
             icon: "warning",
@@ -44,10 +43,12 @@ const Profile = () => {
             });
             if (response.status === 200) {
                 setUserInfo(response.data); // 서버에서 받은 사용자 정보 저장
-            } else {
+            } 
+            else {
                 console.log('서버 응답 오류:', response.status);
             }
         } catch (error) {
+            navigate('/sign-in');
             if(error.response.status === 500) {
                 console.log('500 start');
                 logInWarning();
