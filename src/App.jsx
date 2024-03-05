@@ -1,4 +1,4 @@
-import {Route, Routes} from 'react-router-dom';
+import {Route, Routes, useParams} from 'react-router-dom';
 import { BrowserRouter } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './pages/Home/Home';
@@ -21,7 +21,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/sign-in" element={<SignIn />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="profile/:nickname" element={<Profile />} />
             <Route path="/accounts/edit" element={<ProfileEdit />} />
             <Route path="/accounts/personal-info" element={<ProfileInfo />} />
             <Route path="/accounts/delete" element={<ProfileDelete />} />

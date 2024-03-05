@@ -19,8 +19,8 @@ const Header = () => {
 
     const removeToken = () => {
         localStorage.removeItem('accessToken'); // 로컬 스토리지에서 토큰 가져옴
-        // setIsLogin(false);
     };
+    
     const loginCheck = async () => {
         console.log('loginCheck');
         try {
