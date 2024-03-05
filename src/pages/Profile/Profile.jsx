@@ -7,7 +7,6 @@ import React, { useState, useEffect } from 'react';
 import Swal from "sweetalert2";
 
 const Profile = () => {
-    let navigate = useNavigate(); // 다른 component 로 이동할 때 사용
     const [userInfo, setUserInfo] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [friends, setFriends] = useState([]); //친구 목록

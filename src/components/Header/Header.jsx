@@ -104,7 +104,7 @@ const Header = () => {
                             <NavItem to="/" text="홈" activePage={activePage} />
                             <NavItem to="/friends" text="친구" activePage={activePage} />
                             <NavItem to="/study" text="스터디" activePage={activePage} />
-                            <NavItem to="/chatting" text="채팅" activePage={activePage} />
+                            <NavItem to="/chat" text="채팅" activePage={activePage} />
                             <NavItem to="/profile" text="프로필" activePage={activePage} />
                         </ul>
                     </div>
