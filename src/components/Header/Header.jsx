@@ -6,7 +6,7 @@ import "../PageLayout/PageLayout.css"
 
 const Header = () => {
     const [isNavOpen, setNavOpen] = useState(false);
-    const [isLogin, setIsLogin] = useState(false); // 로그인 상태 저장
+    const [myNickname, setMyNickname] = useState('');
 
     useEffect(() => {
         loginCheck(); // 컴포넌트가 마운트될 때 로그인 상태 확인
@@ -20,30 +20,30 @@ const Header = () => {
 
     const removeToken = () => {
         localStorage.removeItem('accessToken'); // 로컬 스토리지에서 토큰 가져옴
-        setIsLogin(false);
     };
+    
     const loginCheck = async () => {
         console.log('loginCheck');
         try {
             const token = getToken(); // 토큰 가져오기
-            if (token) {
-                const response = await axios.get('/api/auth/sec/home', {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-                if (response.status === 200) {
-                    setIsLogin(true); // 로그인 상태 업데이트
+            const response = await axios.get('/api/auth/sec/home', {
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
-                else {
-                    setIsLogin(false);
+            });
+
+            const response2 = await axios.get('/api/auth/member/myPage', {
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
-            } else {
-                setIsLogin(false); // 토큰이 없을 경우
+            });
+
+            if(response.status == 200){
+                setMyNickname(response2.data.nickname);
             }
+
         } catch (error) {
             console.error('Login Error:', error);
-            setIsLogin(false);
         }
     };
 
@@ -71,7 +71,7 @@ const Header = () => {
                         </Link>
                     </div>
 
-                    {isLogin ? (
+                    {getToken() ? (
                         <button className={`btn nav-link ms-auto order-lg-last`} onClick={removeToken} style={{ backgroundColor: "#B3C693", padding: "5px 15px", marginRight: "10px"}}>
                             로그아웃
                         </button>
@@ -105,7 +105,7 @@ const Header = () => {
                             <NavItem to="/friends" text="친구" activePage={activePage} />
                             <NavItem to="/study" text="스터디" activePage={activePage} />
                             <NavItem to="/chatting" text="채팅" activePage={activePage} />
-                            <NavItem to="/profile" text="프로필" activePage={activePage} />
+                            <NavItem to={`/profile/${myNickname}`} text="프로필" activePage={activePage} />
                         </ul>
                     </div>
                 </div>

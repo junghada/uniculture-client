@@ -5,7 +5,6 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
 const ProfileDelete = () => {
-    const [userInfo, setUserInfo] = useState(null);
     const [deleteInput, setDeleteInput] = useState('');
     const [isModalOpened, setIsModalOpened] = useState(false);
     
@@ -20,6 +19,10 @@ const ProfileDelete = () => {
     return localStorage.getItem('accessToken'); // 쿠키 또는 로컬 스토리지에서 토큰을 가져옴
     };
 
+    const removeToken = () => {
+        localStorage.removeItem('accessToken'); // 로컬 스토리지에서 토큰 가져옴
+    };
+
     // 회원 삭제
     const deleteUser = async () => {
         console.log('deleteUser');
@@ -32,6 +35,7 @@ const ProfileDelete = () => {
             });
             if(response.status === 200) {
                 alert("회원이 삭제되었습니다.");
+                removeToken();
                 navigate('/');
             }
             else if(response.status === 400) {

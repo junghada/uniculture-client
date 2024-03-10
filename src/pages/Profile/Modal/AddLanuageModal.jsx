@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import PercentBar from '../../../components/PercentBar/PercentBar'
+import PercentBar from '../../../components/PercentBar/editPercentBar'
 
 export default function AddLanuageModal({handleModal, addLanguage}) {
     const [language, setLanguage] = useState(null);

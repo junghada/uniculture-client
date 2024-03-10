@@ -1,5 +1,5 @@
 import Layout from "../../components/Layout";
-import PercentBar from "../../components/PercentBar/PercentBar";
+import PercentBar from "../../components/PercentBar/editPercentBar";
 import Sidebar from "../../components/ProfileSidebar/Sidebar";
 import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
@@ -30,12 +30,6 @@ const ProfileEdit = () => {
             });
             if(response.status === 200) {
                 setUserInfo(response.data); // 서버에서 받은 사용자 정보 반환
-                setUserInfo({
-                    ...userInfo,
-                    introduce:"안녕하세요.",
-                    myHobbyList: ["요리", "산책"],
-                    myLanguages:{"한국어":"80", "일본어":"40"}
-                });
             }
             else if(response.status === 400) {
                 console.log('클라이언트 에러(입력 형식 불량)');
@@ -50,13 +44,7 @@ const ProfileEdit = () => {
     };
     
     useEffect(() => {
-        // fetchUserInfo();
-        setUserInfo({
-            introduce:"안녕하세요.",
-            myHobbyList: ["요리", "산책"],
-            myLanguages:{"한국어":80, "일본어":38},
-            wantLanguage:{"중국어":50}
-        });
+        fetchUserInfo();
     }, [])
 
     //회원정보 수정
@@ -229,7 +217,7 @@ const ProfileEdit = () => {
                                 <input 
                                     className="form-control" 
                                     placeholder="소개 입력" 
-                                    value={userInfo?.introduce}
+                                    value={userInfo?.introduce || ''}
                                     onChange={changeIntroduce}
                                 />
                             </div>
@@ -238,20 +226,20 @@ const ProfileEdit = () => {
                         <div className="mb-5 row">
                             <label className="col-sm-2 col-form-label">취미</label>
                             <div className="col-sm-10">
-                                <input type="checkbox" checked={userInfo?.myHobbyList.includes('요리')} onChange={() => handleHobbyChange('요리')} className="btn-check" id="btn-check-1" autocomplete="off"/>
-                                <label className="btn btn-outline-primary" for="btn-check-1">요리</label>
+                                <input type="checkbox" checked={userInfo?.myHobbyList.includes('요리')} onChange={() => handleHobbyChange('요리')} className="btn-check" id="btn-check-1" autoComplete="off"/>
+                                <label className="btn btn-outline-primary" htmlFor="btn-check-1">요리</label>
 
-                                <input type="checkbox" checked={userInfo?.myHobbyList.includes('산책')} onChange={() => handleHobbyChange('산책')} className="btn-check" id="btn-check-2" autocomplete="off"/>
-                                <label className="btn btn-outline-primary" for="btn-check-2">산책</label>
+                                <input type="checkbox" checked={userInfo?.myHobbyList.includes('산책')} onChange={() => handleHobbyChange('산책')} className="btn-check" id="btn-check-2" autoComplete="off"/>
+                                <label className="btn btn-outline-primary" htmlFor="btn-check-2">산책</label>
 
-                                <input type="checkbox" checked={userInfo?.myHobbyList.includes('쇼핑')} onChange={() => handleHobbyChange('쇼핑')} className="btn-check" id="btn-check-3" autocomplete="off"/>
-                                <label className="btn btn-outline-primary" for="btn-check-3">쇼핑</label>
+                                <input type="checkbox" checked={userInfo?.myHobbyList.includes('쇼핑')} onChange={() => handleHobbyChange('쇼핑')} className="btn-check" id="btn-check-3" autoComplete="off"/>
+                                <label className="btn btn-outline-primary" htmlFor="btn-check-3">쇼핑</label>
 
-                                <input type="checkbox" checked={userInfo?.myHobbyList.includes('여행')} onChange={() => handleHobbyChange('여행')} className="btn-check" id="btn-check-4" autocomplete="off"/>
-                                <label className="btn btn-outline-primary" for="btn-check-4">여행</label>
+                                <input type="checkbox" checked={userInfo?.myHobbyList.includes('여행')} onChange={() => handleHobbyChange('여행')} className="btn-check" id="btn-check-4" autoComplete="off"/>
+                                <label className="btn btn-outline-primary" htmlFor="btn-check-4">여행</label>
 
-                                <input type="checkbox" checked={userInfo?.myHobbyList.includes('드라이브')} onChange={() => handleHobbyChange('드라이브')} className="btn-check" id="btn-check-5" autocomplete="off"/>
-                                <label className="btn btn-outline-primary" for="btn-check-5">드라이브</label>
+                                <input type="checkbox" checked={userInfo?.myHobbyList.includes('드라이브')} onChange={() => handleHobbyChange('드라이브')} className="btn-check" id="btn-check-5" autoComplete="off"/>
+                                <label className="btn btn-outline-primary" htmlFor="btn-check-5">드라이브</label>
 
                             </div>
                         </div>
