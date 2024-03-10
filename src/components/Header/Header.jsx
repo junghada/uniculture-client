@@ -6,6 +6,7 @@ import "../PageLayout/PageLayout.css"
 
 const Header = () => {
     const [isNavOpen, setNavOpen] = useState(false);
+    const [myNickname, setMyNickname] = useState('');
 
     useEffect(() => {
         loginCheck(); // 컴포넌트가 마운트될 때 로그인 상태 확인
@@ -25,13 +26,22 @@ const Header = () => {
         console.log('loginCheck');
         try {
             const token = getToken(); // 토큰 가져오기
-            if (token) {
-                const response = await axios.get('/api/auth/sec/home', {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+            const response = await axios.get('/api/auth/sec/home', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const response2 = await axios.get('/api/auth/member/myPage', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if(response.status == 200){
+                setMyNickname(response2.data.nickname);
             }
+
         } catch (error) {
             console.error('Login Error:', error);
         }
@@ -95,7 +105,7 @@ const Header = () => {
                             <NavItem to="/friends" text="친구" activePage={activePage} />
                             <NavItem to="/study" text="스터디" activePage={activePage} />
                             <NavItem to="/chatting" text="채팅" activePage={activePage} />
-                            <NavItem to="/profile" text="프로필" activePage={activePage} />
+                            <NavItem to={`/profile/${myNickname}`} text="프로필" activePage={activePage} />
                         </ul>
                     </div>
                 </div>

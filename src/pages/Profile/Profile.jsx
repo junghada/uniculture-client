@@ -28,14 +28,14 @@ const Profile = () => {
                     }
                 });
     
-                const response2 = await axios.get('/api/member/otherPage/16');
+                const response2 = await axios.get(`/api/member/otherPage/${nickname}`);
 
                 if (response.status === 200) {
-                    if(nickname == response.data.nickname){
+                    if(nickname === response.data.nickname){
                         setMyInfo(response.data);
                         setMyProfile(true); //내 프로필 보여주기
                     }
-                    else if (nickname != response.data.nickname){
+                    else if (nickname !== response.data.nickname){
                         setMyInfo(response.data);
                         setOtherInfo(response2.data);
                         setMyProfile(false); //다른 사람 프로필 보여주기
@@ -52,13 +52,14 @@ const Profile = () => {
             }
             
         } catch (error) {
+            navigate("/");
             console.error('사용자 정보를 가져오는 도중 오류 발생:', error);
         }
     };
 
     useEffect(() => {
         fetchUserInfo();
-    }, []);
+    },[]);
 
     const handleMyInfo = () => {
         fetchUserInfo();
