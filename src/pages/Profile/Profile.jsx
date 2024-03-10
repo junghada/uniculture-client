@@ -20,7 +20,6 @@ const Profile = () => {
     const fetchUserInfo = async () => {
         try {
             const token = getToken(); // 토큰 가져오기
-
             if(token){ //로그인 O
                 const response = await axios.get('/api/auth/member/myPage', {
                     headers: {

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import logoImg from "../../assets/logo.png";
 import axios from "axios";
 import "../PageLayout/PageLayout.css"
 
 const Header = () => {
+    const navigate = useNavigate(); // 다른 component 로 이동할 때 사용
     const [isNavOpen, setNavOpen] = useState(false);
     const [myNickname, setMyNickname] = useState('');
 
@@ -61,6 +62,14 @@ const Header = () => {
         </li>
     );
 
+    const handleSignUp = () => {
+        navigate("/sign-up", { state: { from: location.pathname } }); // 회원가입 페이지로 이동
+    };
+
+    const handleSignIn = () => {
+        navigate("/sign-in", { state: { from: location.pathname } }); // 로그인 페이지로 이동
+    };
+
     return (
             <nav className={`navbar navbar-expand-lg`} style={{ backgroundColor: '#C8DCA0' }}>
                 <div className="container-fluid" style={{paddingLeft: "100px", paddingRight: "100px"}}>
@@ -78,14 +87,14 @@ const Header = () => {
                     ) : (
                         <>
                             <div className={`ms-auto order-lg-last`}>
-                                <Link to="/sign-in" className={`btn nav-link`} style={{ backgroundColor: "#B3C693", padding: "5px 15px", marginRight: "10px" }}>
+                                <button className={`btn nav-link`} style={{ backgroundColor: "#B3C693", padding: "5px 15px", marginRight: "10px" }} onClick={handleSignIn}>
                                     로그인
-                                </Link>
+                                </button>
                             </div>
                             <div className={`order-lg-last`}>
-                                <Link to="/sign-up" className={`btn nav-link`} style={{ backgroundColor: "#B3C693", padding: "5px 15px", marginRight: "10px" }}>
+                                <button className={`btn nav-link`} style={{ backgroundColor: "#B3C693", padding: "5px 15px", marginRight: "10px" }} onClick={handleSignUp}>
                                     회원가입
-                                </Link>
+                                </button>
                             </div>
                         </>
                     )}
