@@ -1,5 +1,5 @@
 import Layout from "../../components/Layout";
-import PercentBar from "../../components/PercentBar/PercentBar";
+import PercentBar from "../../components/PercentBar/editPercentBar";
 import Sidebar from "../../components/ProfileSidebar/Sidebar";
 import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';

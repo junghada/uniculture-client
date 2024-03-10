@@ -1,176 +1,77 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { IoIosSettings } from "react-icons/io";
-import styles from './Profile.module.css';
-import Layout from "../../components/Layout";
-import axios from 'axios';
+import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
-import Swal from "sweetalert2";
+import axios from 'axios';
+import MyProfile from "./MyProfile";
+import OtherProfile from "./OtherProfile";
 
 const Profile = () => {
     const { nickname } = useParams();
     const [myProfile, setMyProfile] = useState(false);
-    const [myInfo, setmyInfo] = useState(null);
-    const [userInfo, setUserInfo] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [friends, setFriends] = useState([]); //친구 목록
+    const [myInfo, setMyInfo] = useState(null);
+    const [otherInfo, setOtherInfo] = useState(null);
     const navigate = useNavigate();
 
     // 로그인 후 저장된 토큰 가져오는 함수
     const getToken = () => {
         return localStorage.getItem('accessToken'); // 쿠키 또는 로컬 스토리지에서 토큰을 가져옴
     };
-    
-    const logInWarning = () => {
-        Swal.fire({
-            icon: "warning",
-            title: "주의",
-            text: "로그인 후 이용해주세요!",
-            confirmButtonColor: "#8BC765",
-            confirmButtonText: "확인",
-        });
-    };
 
     // 서버에 정보를 요청하는 함수
     const fetchUserInfo = async () => {
         try {
             const token = getToken(); // 토큰 가져오기
-            const response = await axios.get('/api/auth/member/myPage', {
-                headers: {
-                    Authorization: `Bearer ${token}` // 헤더에 토큰 추가
-                }
-            });
 
-            const response2 = await axios.get('/api/member/otherPage/14');;
+            if(token){ //로그인 O
+                const response = await axios.get('/api/auth/member/myPage', {
+                    headers: {
+                        Authorization: `Bearer ${token}` // 헤더에 토큰 추가
+                    }
+                });
+    
+                const response2 = await axios.get('/api/member/otherPage/16');
 
-            if (response.status === 200) {
-                if(nickname == response.data.nickname){
-                    setUserInfo(response.data); // 서버에서 받은 사용자 정보 저장
-                    setMyProfile(true);
+                if (response.status === 200) {
+                    if(nickname == response.data.nickname){
+                        setMyInfo(response.data);
+                        setMyProfile(true); //내 프로필 보여주기
+                    }
+                    else if (nickname != response.data.nickname){
+                        setMyInfo(response.data);
+                        setOtherInfo(response2.data);
+                        setMyProfile(false); //다른 사람 프로필 보여주기
+                    }
                 }
-                else if (nickname != response.data.nickname){
-                    setmyInfo(response.data);
-                    setUserInfo(response2.data);
-                    setMyProfile(false);
-                }
-            } 
-            else {
-                console.log('서버 응답 오류:', response.status);
             }
+            else { //로그인 X
+                const response = await axios.get('/api/member/otherPage/16');
+
+                if (response.status === 200) {
+                    setOtherInfo(response.data);
+                    setMyProfile(false); //다른 사람 프로필 보여주기
+                }
+            }
+            
         } catch (error) {
             console.error('사용자 정보를 가져오는 도중 오류 발생:', error);
-            navigate('/sign-in');
-            return;
         }
     };
 
     useEffect(() => {
         fetchUserInfo();
-    }, [nickname]);
+    }, []);
 
+    const handleMyInfo = () => {
+        fetchUserInfo();
+    }
 
-
-    // 친구 목록 조회
-    const friendList = async () => {
-        try {
-            const token = getToken(); // 토큰 가져오기
-            if (!token) {
-                // 토큰이 없으면 로그인 페이지로 이동
-                alert("로그인 해주세요.")
-                navigate('/sign-in');
-                return;
-            }
-            const response = await axios.get('/api/auth/friend', {
-                headers: {
-                    Authorization: `Bearer ${token}` // 헤더에 토큰 추가
-                }
-            });
-            if (response.status === 200) {
-                setFriends(response.data);
-            } else {
-                console.log('서버 응답 오류:', response.status);
-            }
-        } catch (error) {
-            console.error('사용자 정보를 가져오는 도중 오류 발생:', error);
-        }
-    };
-
-    const chatting = async () => {
-        try {
-            const token = getToken(); // 토큰 가져오기
-            const response = await axios.post('/api/auth/room', {
-                name: "RoomName", // 방 이름 추가
-                memberIds: [myInfo.id, userInfo.id]
-            },{
-                headers: {
-                    Authorization: `Bearer ${token}` // 헤더에 토큰 추가
-                }
-            });
-            if (response.status === 200) {
-                
-            } else {
-                console.log('서버 응답 오류:', response.status);
-            }
-        } catch (error) {
-            console.error('사용자 정보를 가져오는 도중 오류 발생:', error);
-        }
-    };
+    const handleOtherInfo = (otherInfo) => {
+        setOtherInfo(otherInfo);
+    }
 
     return (
-        <Layout>
-            <div className={styles.profile}>
-                <div className={styles.left}>
-                    <div className={styles.imageWrapper}>
-                        <img
-                            src={userInfo?.profileImage ? userInfo.profileImage : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
-                            alt="profile"
-                            className={styles.image}
-                        />
-                    </div>
-                </div>
-
-                <div className={styles.right}>
-                    <div className={styles.name}>{userInfo?.nickname}</div>
-                    {myProfile ? (
-                        <div className={styles.edit}>
-                            <Link to="/accounts/edit">
-                                <IoIosSettings size={20} color="gray" />
-                            </Link>
-                        </div>
-                    ) : (
-                        <div>
-                            <button onClick={chatting}>메세지 보내기</button>
-                        </div>
-                    )}
-                    
-                    {userInfo?.introduce && <div className={styles.intro}>{userInfo.introduce}</div>}
-                    <div>
-                        <div className={styles.post}>게시글</div>
-                        <div className={styles.postNum}>{userInfo?.postnum}</div>
-                        <div className={styles.friend} onClick={()=> {setShowModal(true)}}>친구</div>
-                        <div className={styles.friendNum} onClick={()=> {setShowModal(true)}}>{userInfo?.friendnum}</div>
-                    </div>
-                </div>
-            </div>
-
-            {/* 모달 */}
-            {showModal && (
-                <div className="modal fade show" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
-                    <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="exampleModalLabel">친구리스트</h5>
-                            </div>
-                            <div className="modal-body">
-                                친구리스트
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => setShowModal(false)}>닫기</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </Layout>
+        <>
+            {myProfile ? <MyProfile myInformation={myInfo} handleMyInfo={handleMyInfo} /> : (otherInfo && <OtherProfile myInformation={myInfo} otherInformation={otherInfo} handleMyInfo={handleMyInfo} handleOtherInfo={handleOtherInfo} />)}
+        </>
     );
 };
 
