@@ -54,6 +54,11 @@ const SignUp = () => {
         if (daySelect) daySelect.selectedIndex = 0;
     }
 
+    const emailResetInput = () => { // 이메일만 초기화
+        setEmail('');
+        setEmailValid(false);
+    }
+
     const handleInputClick = async (e) => {
         console.log('sing-up');
         const request_data = {
@@ -77,21 +82,37 @@ const SignUp = () => {
             console.log('서버 응답: ', response);
             console.log('response.status: ', response.status);
             if(response.status === 200) {
-                alert("회원가입이 완료되었습니다!")
+                alert("회원가입이 완료되었습니다!");
                 navigate("/", {});
             }
-            else if(response.status === 400) {
-                alert("이미 가입한 이메일입니다.")
-                resetInput();
-            }
             else {
-                alert("회원가입에 실패하였습니다.")
+                alert("회원가입에 실패하였습니다.");
                 resetInput();
             }
         } catch (err) {
-            resetInput();
+            if(err.response.status === 409) {
+                console.log("이메일 중복 오류입니다.");
+                emailWarning();
+                //alert(err.response.data); // 실패했습니다
+                emailResetInput();
+            }
+            else {
+                console.log("서버 오류 입니다.");
+                alert(err.response.data);
+                resetInput();
+            }
         }
     }
+
+    const emailWarning = () => {
+        Swal.fire({
+            icon: "warning",
+            title: "이메일 중복",
+            html: "이미 사용 중인 이메일입니다. <br>다른 이메일을 사용해주세요.",
+            confirmButtonColor: "#8BC765",
+            confirmButtonText: "확인",
+        });
+    };
 
     const nickNameWarning = () => {
         Swal.fire({
@@ -106,7 +127,6 @@ const SignUp = () => {
     // 닉네임 중복 검사
     const handleNickName = async (e) => {
         console.log(`handleNickName: ${nickName}`);
-
         try {
             let response = await axios({
                 method: 'get',
@@ -116,15 +136,19 @@ const SignUp = () => {
             if (response.status === 200) {
                 console.log(`api 요청 후: ${nickName}`);
                 setNickNameValid(true); // 닉네임이 유효하다는 것을 나타냄
-            } else {
+            }
+        } catch (err) { // 서버 오류
+            if(err.response.status === 409) {
+                console.log("닉네임 중복 오류입니다.");
                 setNickNameValid(false); // 닉네임이 유효하지 않다는 것을 나타냄
                 nickNameWarning();
             }
-        } catch (err) {
-            console.error(err);
+            else {
+                console.log("서버 오류 입니다.");
+                alert(err.response.data);
+                resetInput();
+            }
         }
-
-        console.log('끝');
     };
 
     const changeNickName = (e) => {
@@ -132,10 +156,9 @@ const SignUp = () => {
         console.log(`e.tartget.value: ${e.target.value}`);
         console.log(`nickName: ${nickName}`);
 
-        // 닉네임이 비어 있는지 확인
+        // 사용자가 입력한 닉네임이 변경되면
         if (e.target.value !== nickName) {
             setNickNameValid(false);
-            return;
         }
     };
 

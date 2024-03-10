@@ -17,7 +17,7 @@ const ProfileEdit = () => {
     const getToken = () => {
         return localStorage.getItem('accessToken'); // 쿠키 또는 로컬 스토리지에서 토큰을 가져옴
     };
-    
+
     // 서버에 정보를 요청하는 함수
     const fetchUserInfo = async () => {
         console.log('myPage');
@@ -30,12 +30,6 @@ const ProfileEdit = () => {
             });
             if(response.status === 200) {
                 setUserInfo(response.data); // 서버에서 받은 사용자 정보 반환
-                setUserInfo({
-                    ...userInfo,
-                    introduce:"안녕하세요.",
-                    myHobbyList: ["요리", "산책"],
-                    myLanguages:{"한국어":"80", "일본어":"40"}
-                });
             }
             else if(response.status === 400) {
                 console.log('클라이언트 에러(입력 형식 불량)');
@@ -48,15 +42,9 @@ const ProfileEdit = () => {
             throw error;
         }
     };
-    
+
     useEffect(() => {
-        // fetchUserInfo();
-        setUserInfo({
-            introduce:"안녕하세요.",
-            myHobbyList: ["요리", "산책"],
-            myLanguages:{"한국어":80, "일본어":38},
-            wantLanguage:{"중국어":50}
-        });
+        fetchUserInfo();
     }, [])
 
     //회원정보 수정
@@ -106,11 +94,11 @@ const ProfileEdit = () => {
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         const reader = new FileReader();
-    
+
         reader.readAsDataURL(file);
         reader.onloadend = () => {
-          setProfileImg(reader.result);
-          event.target.value = ''; //같은 파일 올릴 수 있도록 초기화 해줌
+            setProfileImg(reader.result);
+            event.target.value = ''; //같은 파일 올릴 수 있도록 초기화 해줌
         };
     };
 
@@ -118,7 +106,7 @@ const ProfileEdit = () => {
     const handleHobbyChange = (hobby) => {
         // updatedHobbies를 userInfo?.myHobbyList로 초기화
         let updatedHobbies = userInfo?.myHobbyList || [];
-            
+
         if (updatedHobbies.includes(hobby)) {
             // 선택된 취미가 이미 존재하는 경우 : 해당 취미를 제거
             updatedHobbies = updatedHobbies.filter(item => item !== hobby);
@@ -188,7 +176,7 @@ const ProfileEdit = () => {
                             <h4 className="h4">프로필 편집</h4>
                         </div>
                         <div className="mb-3 row justify-content-center">
-                            <div 
+                            <div
                                 className="imageWrapper"
                                 style={{
                                     width: "200px",
@@ -205,17 +193,17 @@ const ProfileEdit = () => {
                                         width:"100%",
                                         height: "100%",
                                         objectFit:"cover"
-                                    }}                      
+                                    }}
                                 />
-                            
+
                             </div>
                         </div>
 
                         <div className="mb-4 row justify-content-center">
                             <button type="button" style={{width:"80px", marginRight:"15px"}} onClick={()=>{setProfileImg(null); setUserInfo({...userInfo, profileurl: null})}}>삭제</button>
                             <button type="file" style={{width:"80px"}} accept='image/*' onClick={() => selectFile.current.click()} >변경</button>
-                            <input 
-                                type="file" 
+                            <input
+                                type="file"
                                 accept='image/*'
                                 style={{ display: "none" }}
                                 ref={selectFile} //input에 접근 하기위해 useRef사용
@@ -226,9 +214,9 @@ const ProfileEdit = () => {
                         <div className="mb-5 row">
                             <label className="col-sm-2 col-form-label">소개</label>
                             <div className="col-sm-10">
-                                <input 
-                                    className="form-control" 
-                                    placeholder="소개 입력" 
+                                <input
+                                    className="form-control"
+                                    placeholder="소개 입력"
                                     value={userInfo?.introduce}
                                     onChange={changeIntroduce}
                                 />
@@ -262,7 +250,7 @@ const ProfileEdit = () => {
                                 <button style={{borderRadius:"25px",backgroundColor:"#C6CAC3", border:"0px"}} onClick={()=>{setIsModalOpened1(true)}}>Add Language</button>
                                 {isModalOpened1&&<AddLanuageModal handleModal={()=>{setIsModalOpened1(false)}} addLanguage={handleMyLanguages}/>}
                             </div>
-                            
+
                         </div>
 
                         <div className="mb-5 row">
@@ -282,7 +270,7 @@ const ProfileEdit = () => {
                                 <button style={{borderRadius:"25px",backgroundColor:"#C6CAC3", border:"0px"}} onClick={()=>{setIsModalOpened2(true)}}>Add Language</button>
                                 {isModalOpened2&&<AddLanuageModal handleModal={()=>{setIsModalOpened2(false)}} addLanguage={handleWantLanguage}/>}
                             </div>
-                            
+
                         </div>
 
                         <div className="mb-5 row">
@@ -297,28 +285,28 @@ const ProfileEdit = () => {
                         </div>
 
                         <div className="row justify-content-center">
-                            <button type="button" 
-                            style={{
-                                width: "109px",
-                                height: "34px",
-                                marginRight: "25px",
-                                marginBottom: "20px",
-                                borderRadius:"25px",
-                                backgroundColor:"#C6CAC3", 
-                                border:"0px"
-                            }}
-                            onClick={()=>{alert(JSON.stringify(userInfo));}}
+                            <button type="button"
+                                    style={{
+                                        width: "109px",
+                                        height: "34px",
+                                        marginRight: "25px",
+                                        marginBottom: "20px",
+                                        borderRadius:"25px",
+                                        backgroundColor:"#C6CAC3",
+                                        border:"0px"
+                                    }}
+                                    onClick={()=>{alert(JSON.stringify(userInfo));}}
                             >
                                 취소
                             </button>
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 style={{
                                     width: "109px",
                                     height: "34px",
                                     marginBottom: "20px",
                                     borderRadius:"25px",
-                                    backgroundColor:"#B7DAA1", 
+                                    backgroundColor:"#B7DAA1",
                                     border:"0px"
                                 }}
                                 onClick={changeInfo}

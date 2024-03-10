@@ -39,15 +39,17 @@ const SignIn = () => {
                 const previousPath = location.state?.from || "/"; // 이전 경로가 없으면 기본 경로는 "/"
                 navigate(previousPath, {}); // 로그인 성공 후 이전 페이지로 이동
             }
-            // 로그인 실패
-            else {
-                alert(response.data.message); // 에러 메시지
+        } catch (error) { // 로그인 실패 시
+            if(error.response.status === 401) {
+                console.log("올바른 이메일과 비밀번호를 입력해주세요.");
+                signInWarning(); // 로그인 에러 메시지 창
                 resetInput();
             }
-        } catch (error) { // 네트워크 오류 등 예외 처리
-            signInWarning(); // 로그인 에러 메시지 창
-            resetInput();
-            console.error(error);
+            else {
+                console.log("서버 오류 입니다.");
+                alert(error.response.data);
+                resetInput();
+            }
         }
     };
 
@@ -98,7 +100,7 @@ const SignIn = () => {
         Swal.fire({
             icon: "warning",
             title: "로그인 실패",
-            html: "올바른 이메일과 비밀번호를 입력해주세요",
+            html: "올바른 이메일과 비밀번호를 입력해주세요.",
             confirmButtonColor: "#8BC765",
             confirmButtonText: "확인",
         });
