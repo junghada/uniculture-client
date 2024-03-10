@@ -1,10 +1,14 @@
 //회원 가입 페이지
 import React, {useEffect, useState} from "react"
 import axios from 'axios';
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useNavigate, useLocation} from "react-router-dom";
 import './Auth.css';
+import { IoArrowBack } from "react-icons/io5";
+import Swal from "sweetalert2";
+
 const SignIn = () => {
-    let navigate = useNavigate(); // 다른 component 로 이동할 때 사용
+    const navigate = useNavigate(); // 다른 component 로 이동할 때 사용
+    const location = useLocation();
     const [email, setEmail] = useState('');
     const [pw, setPw] = useState('');
     const [emailValid, setEmailValid] = useState(false);
@@ -32,16 +36,20 @@ const SignIn = () => {
                 if(response.data.accessToken){ // null인 경우 실행되지 않음
                     localStorage.setItem('accessToken', response.data.accessToken);
                 }
-                navigate("/", {}); // 로그인 성공 후 메인 페이지로 이동
+                const previousPath = location.state?.from || "/"; // 이전 경로가 없으면 기본 경로는 "/"
+                navigate(previousPath, {}); // 로그인 성공 후 이전 페이지로 이동
             }
-            // 로그인 실패
-            else {
-                alert(response.data.message); // 에러 메시지
+        } catch (error) { // 로그인 실패 시
+            if(error.response.status === 401) {
+                console.log("올바른 이메일과 비밀번호를 입력해주세요.");
+                signInWarning(); // 로그인 에러 메시지 창
                 resetInput();
             }
-        } catch (error) { // 네트워크 오류 등 예외 처리
-            resetInput();
-            console.error(error);
+            else {
+                console.log("서버 오류 입니다.");
+                alert(error.response.data);
+                resetInput();
+            }
         }
     };
 
@@ -82,10 +90,28 @@ const SignIn = () => {
         setShowPassword(!showPassword);
     };
 
+    // IoArrowBack 클릭 시 이전 경로로 이동
+    const goBackToPreviousPath = () => {
+        const previousPath = location.state?.from || "/"; // 이전 경로가 없으면 기본 경로는 "/"
+        navigate(previousPath, {}); // 이전 페이지로 이동
+    };
+
+    const signInWarning = () => {
+        Swal.fire({
+            icon: "warning",
+            title: "로그인 실패",
+            html: "올바른 이메일과 비밀번호를 입력해주세요.",
+            confirmButtonColor: "#8BC765",
+            confirmButtonText: "확인",
+        });
+    };
+
     return (
         <div style={{ backgroundColor: '#FBFBF3', minHeight: '100vh' }}>
+            <IoArrowBack style={{ fontSize: '25px', marginTop: '20px', marginLeft: '20px'}} onClick={goBackToPreviousPath}/>
             <div className="auth-layout">
                 <div className="title"><Link to={"/"} style={{ color: "#04B404", textDecoration: "none"}}>UniCulture</Link></div>
+                <div className="sub-title">나의 성장을 돕는 언어교류 플랫폼</div>
                 <div className="inputTitle">✉️ 이메일</div>
                 <div className="inputWrap">
                     <input className="input" type="email" placeholder="test@example.com" value={email} onChange={handleEmail}/>
@@ -110,7 +136,7 @@ const SignIn = () => {
                 </label>
                 <button disabled={notAllow} className="authButton" onClick={handleLogin} style={{marginBottom: '7px', marginTop: '35px'}}>로그인</button>
                 <div className="signUpText">
-                    <Link to={"/sign-up"} style={{ textDecoration: "none"}}>
+                    <Link to={"/sign-up"}>
                         <div style={{color: "dimgrey"}}>회원가입</div>
                     </Link>
                 </div>
