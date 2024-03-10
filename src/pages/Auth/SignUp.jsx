@@ -144,7 +144,7 @@ const SignUp = () => {
                 nickNameWarning();
             }
             else {
-                console.log("서버 오류 입니다.~");
+                console.log("서버 오류 입니다.");
                 alert(err.response.data);
                 resetInput();
             }
