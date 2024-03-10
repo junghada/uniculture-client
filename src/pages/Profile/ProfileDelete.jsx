@@ -5,10 +5,11 @@ import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
 import AddLanuageModal from "./Modal/AddLanuageModal";
 
-const ProfileEdit = () => {
-    const [userInfo, setUserInfo] = useState(null);
-    const [profileImg, setProfileImg] = useState(null);
-    const selectFile = useRef(null);
+const ProfileDelete = () => {
+    const [deleteInput, setDeleteInput] = useState('');
+    const [isModalOpened, setIsModalOpened] = useState(false);
+    
+    const navigate = useNavigate();
 
     const [isModalOpened1, setIsModalOpened1] = useState(false); //사용 언어 추가 모달창
     const [isModalOpened2, setIsModalOpened2] = useState(false); //학습 언어 추가 모달창
@@ -18,9 +19,13 @@ const ProfileEdit = () => {
         return localStorage.getItem('accessToken'); // 쿠키 또는 로컬 스토리지에서 토큰을 가져옴
     };
 
-    // 서버에 정보를 요청하는 함수
-    const fetchUserInfo = async () => {
-        console.log('myPage');
+    const removeToken = () => {
+        localStorage.removeItem('accessToken'); // 로컬 스토리지에서 토큰 가져옴
+    };
+
+    // 회원 삭제
+    const deleteUser = async () => {
+        console.log('deleteUser');
         try {
             const token = getToken(); // 토큰 가져오기
             const response = await axios.get('/api/auth/member/editProfile', {
@@ -29,7 +34,9 @@ const ProfileEdit = () => {
                 }
             });
             if(response.status === 200) {
-                setUserInfo(response.data); // 서버에서 받은 사용자 정보 반환
+                alert("회원이 삭제되었습니다.");
+                removeToken();
+                navigate('/');
             }
             else if(response.status === 400) {
                 console.log('클라이언트 에러(입력 형식 불량)');

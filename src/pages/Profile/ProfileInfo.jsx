@@ -8,20 +8,22 @@ const ProfileInfo = () => {
     const [originalNickname, setOriginalNickname] = useState(null);
 
     const [nickNameValid, setNickNameValid] = useState(null);
-    const [showNickNameValid, setShowNickNameValid] = useState(false);
     const [pwValid, setPwValid] = useState(false);
 
     const [exPassword, setExPassword] = useState(''); //현재 비밀번호
     const [showExPassword, setShowExPassword] = useState(false) //현재 비밀번호 보기
-
     const [newPassword, setNewPassword] = useState(''); //새 비밀번호
     const [showNewPassword, setShowNewPassword] = useState(false) //새 비밀번호 보기
-
     const [checkPassword, setCheckPassword] = useState(''); //확인 비밀번호
     const [showCheckPassword, setShowCheckPassword] = useState(false) //확인 비밀번호 보기
 
-    const [show, setShow] = useState(); // 모달창
-    const handleShow = () => setShow(true);
+    const [isYearOptionExisted, setIsYearOptionExisted] = useState(false);
+    const [isMonthOptionExisted, setIsMonthOptionExisted] = useState(false);
+    const [isDayOptionExisted, setIsDayOptionExisted] = useState(false);
+    const [selectedYear, setSelectedYear] = useState(null);
+    const [selectedMonth, setSelectedMonth] = useState(null);
+    const [selectedDay, setSelectedDay] = useState(null);
+    const [age, setAge] = useState(null); // 선택한 생년월일 계산한 나이
 
     // 로그인 후 저장된 토큰 가져오는 함수
     const getToken = () => {
@@ -41,6 +43,7 @@ const ProfileInfo = () => {
             if(response.status === 200) {
                 setUserInfo(response.data); // 서버에서 받은 사용자 정보 반환
                 setOriginalNickname(response.data.nickname); 
+                setAge(response.data.age||0);
             }
             else if(response.status === 400) {
                 console.log('클라이언트 에러(입력 형식 불량)');
@@ -56,7 +59,7 @@ const ProfileInfo = () => {
     
     useEffect(() => {
         fetchUserInfo();
-    }, []);
+    },[]);
 
     //정보 수정
     const changeInfo = async () => {
@@ -66,6 +69,10 @@ const ProfileInfo = () => {
             const requestData = {
                 age: userInfo.age,
                 gender: userInfo.gender,
+                // year: selectedYear,
+                // month: selectedMonth,
+                // day: selectedDay,
+                // age: age
             };
 
             // 닉네임이 변경되었을 경우에만 requestData에 추가
@@ -86,7 +93,7 @@ const ProfileInfo = () => {
             if (newPassword) {
                 //새 비밀번호와 확인 비밀번호가 다르면 경고 후 함수 종료
                 if(newPassword !== checkPassword) {
-                    alert("비밀번호를 다시 입력해주세요.");
+                    alert("새 비밀번호와 확인 비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
                     return;
                 }
                 requestData.newPassword = newPassword;
@@ -104,22 +111,20 @@ const ProfileInfo = () => {
                     }
                 }
             );
-            alert(JSON.stringify(userInfo));
-            console.log('서버 응답: ', response);
-            console.log('response.status: ', response.status);
             if (response.status === 200) {
                 alert("수정 완료");
                 window.location.reload();
             }
-            else if (response.status === 400) {
-                console.error("클라이언트에러");
+        } catch (err) {
+            if (err.response.status === 400) {
+                alert("죄송합니다, 입력하신 현재 비밀번호가 일치하지 않습니다.\n올바른 비밀번호를 입력해주세요.")
             }
-            else if (response.status === 500){
-                console.error("서버에러");
+            else if (err.response.status === 500){
+                alert("죄송합니다, 현재 서버에 문제가 있어 처리할 수 없습니다.\n잠시 후에 다시 시도해주세요.");
             }
-            else alert(response);
-        } catch (error) { // 네트워크 오류 등 예외 처리
-            console.error(error);
+            else{
+                console.log(err);
+            }
         }
     };
 
@@ -136,13 +141,16 @@ const ProfileInfo = () => {
             if (response.status === 200) {
                 console.log(`api 요청 후: ${userInfo.nickname}`);
                 setNickNameValid(true); // 닉네임이 유효하다는 것을 나타냄
-            } else {
-                setNickNameValid(false); // 닉네임이 유효하지 않다는 것을 나타냄
-                setShowNickNameValid(true);
-                handleShow();
-            }
+            } 
         } catch (err) {
-            console.error(err);
+            if(err.response.status === 409){
+                if(userInfo.nickname !== originalNickname){
+                    setNickNameValid(false); // 닉네임이 유효하지 않다는 것을 나타냄
+                }
+                else {
+                    setNickNameValid(null);
+                }
+            }
         }
         console.log('끝');
     };
@@ -179,6 +187,73 @@ const ProfileInfo = () => {
         }
     };
 
+    // 생년월일 드롭다운 처음 포커스 할 때 드롭다운 옵션 동적으로 생성
+    const handleFocusYear = () => {
+        if (!isYearOptionExisted) {
+            setIsYearOptionExisted(true);
+        }
+    };
+    const handleFocusMonth = () => {
+        if (!isMonthOptionExisted) {
+            setIsMonthOptionExisted(true);
+        }
+    };
+    const handleFocusDay = () => {
+        if (!isDayOptionExisted) {
+            setIsDayOptionExisted(true);
+        }
+    };
+
+    // 생년월일 선택한 값으로 상태 설정
+    const handleYearChange = (e) => {
+        setSelectedYear(parseInt(e.target.value));
+    };
+    const handleMonthChange = (e) => {
+        setSelectedMonth(parseInt(e.target.value));
+    };
+    const handleDayChange = (e) => {
+        setSelectedDay(parseInt(e.target.value));
+    };
+
+    //birth 선택하기 전 나이 계산
+    useEffect(() => {
+        if (userInfo && userInfo.year && userInfo.month && userInfo.day) {
+            const currentDate = new Date(); // 현재 날짜 가져오기
+            const birthDate = new Date(userInfo.year, userInfo.month - 1, userInfo.day); // 선택한 생년월일로 날짜 설정
+
+            // 나이 계산
+            let age = currentDate.getFullYear() - birthDate.getFullYear();
+            const monthDiff = currentDate.getMonth() - birthDate.getMonth();
+
+            // 만약 현재 날짜의 월이 생일 월보다 전이거나 같지만 일자가 아직 지나지 않았을 경우 나이에서 1을 빼줌
+            if (monthDiff < 0 || (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            setAge(age);
+            setSelectedYear(userInfo.year);
+            setSelectedMonth(userInfo.month);
+            setSelectedDay(userInfo.day);
+        }
+    }, [userInfo]);
+
+    //birth 선택한 후 나이 계산
+    useEffect(() => {
+        if (selectedYear && selectedMonth && selectedDay) {
+            const currentDate = new Date(); // 현재 날짜 가져오기
+            const birthDate = new Date(selectedYear, selectedMonth - 1, selectedDay); // 선택한 생년월일로 날짜 설정
+
+            // 나이 계산
+            let age = currentDate.getFullYear() - birthDate.getFullYear();
+            const monthDiff = currentDate.getMonth() - birthDate.getMonth();
+
+            // 만약 현재 날짜의 월이 생일 월보다 전이거나 같지만 일자가 아직 지나지 않았을 경우 나이에서 1을 빼줌
+            if (monthDiff < 0 || (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            setAge(age);
+        }
+    }, [selectedYear, selectedMonth, selectedDay]);
+
     return (
         <Layout>
             <div className="container-fluid">
@@ -196,14 +271,25 @@ const ProfileInfo = () => {
                         <div className="mb-4 row">
                             <label className="col-sm-3 col-form-label">NickName</label>
                             <input
-                                className="col-sm-3 col-form-label"
+                                style={{display:"flex", width:"150px", height:"40px"}}
                                 type="text"
                                 name="nickname"
                                 placeholder="닉네임 입력"
                                 value={userInfo?.nickname}
                                 onChange={changeNickName}
                             />
-                            <button className="col-sm-2" onClick={handleNickName}>중복확인</button>
+                            <button 
+                                style={{
+                                    width: "80px",
+                                    height: "34px",
+                                    marginLeft: "25px",
+                                    marginBottom: "20px",
+                                    borderRadius:"25px",
+                                    backgroundColor:"#C6CAC3", 
+                                    border:"0px"
+                                }}
+                                onClick={handleNickName}
+                            >중복확인</button>
 
                             {nickNameValid!== null && (
                                 <div className="mt-2 row">
@@ -212,7 +298,7 @@ const ProfileInfo = () => {
                                         {nickNameValid && (
                                             <div style={{color: "green"}}>사용 가능한 닉네임입니다.</div>
                                         )}
-                                        {!nickNameValid && showNickNameValid && userInfo?.nickname.length > 0 && (
+                                        {!nickNameValid && userInfo?.nickname.length > 0 && (
                                             <div style={{color: "red"}}>사용 불가능한 닉네임입니다.</div>
                                         )}
                                     </div>
@@ -223,7 +309,7 @@ const ProfileInfo = () => {
                         <div className="mb-2 row">
                             <label className="col-sm-3 col-form-label">Password</label>
                             <input 
-                                className="col-sm-3 col-form-label" 
+                                style={{display:"flex", width:"150px", height:"40px"}}
                                 type={showExPassword ? "text" : "password"}
                                 placeholder="현재 비밀번호 입력" 
                                 onChange={(e) => {setExPassword(e.target.value)}}
@@ -237,7 +323,7 @@ const ProfileInfo = () => {
                         <div className="mb-2 row">
                             <label className="col-sm-3 col-form-label"></label>
                             <input 
-                                className="col-sm-3 col-form-label" 
+                                style={{display:"flex", width:"150px", height:"40px"}}
                                 type={showNewPassword ? "text" : "password"}
                                 placeholder="새 비밀번호 입력"
                                 onChange={(e) => {setNewPassword(e.target.value); handlePw(e.target.value);}}
@@ -260,7 +346,7 @@ const ProfileInfo = () => {
                         <div className="mb-4 row">
                             <label className="col-sm-3 col-form-label"></label>
                             <input 
-                                className="col-sm-3 col-form-label" 
+                                style={{display:"flex", width:"150px", height:"40px"}}
                                 type={showCheckPassword ? "text" : "password"}
                                 placeholder="새 비밀번호 확인" 
                                 onChange={(e) => {setCheckPassword(e.target.value)}}
@@ -273,7 +359,7 @@ const ProfileInfo = () => {
 
                         <div className="mb-4 row">
                             <label className="col-sm-3 col-form-label">Gender</label>
-                            <div className="col-sm-3 col-form-label btn-group" role="group" aria-label="Basic radio toggle button group">
+                            <div className="col-sm-5 col-form-label btn-group" role="group" aria-label="Basic radio toggle button group">
                                 <input
                                     type="radio"
                                     name="gender"
@@ -281,7 +367,7 @@ const ProfileInfo = () => {
                                     checked={userInfo?.gender === "MAN"}
                                     onChange={() => setUserInfo({...userInfo, gender: "MAN"})}
                                 />
-                                <label for="btnradio1" style={{marginLeft: "5px", marginRight: "20px"}}>MAN</label>
+                                <label htmlFor="btnradio1" style={{marginLeft: "5px", marginRight: "20px"}}>MAN</label>
 
                                 <input
                                     type="radio"
@@ -290,25 +376,77 @@ const ProfileInfo = () => {
                                     checked={userInfo?.gender === "WOMAN"}
                                     onChange={() => setUserInfo({...userInfo, gender: "WOMAN"})}
                                 />
-                                <label for="btnradio2" style={{marginLeft: "5px"}}>WOMAN</label>
+                                <label htmlFor="btnradio2" style={{marginLeft: "5px"}}>WOMAN</label>
+                            </div>
+                        </div>
+
+                        <div className="mb-4 row">
+                            <label className="col-sm-3 col-form-label">Birth</label>
+                            <div style={{display:"flex", width:"300px", padding:"0px"}}>
+                                <select className="box" id="birth-year" onFocus={handleFocusYear} onChange={handleYearChange} >
+                                    <option disabled selected>출생 연도</option>
+                                    {isYearOptionExisted && (
+                                        Array.from({ length: 2023 - 1940 }, (_, index) => {
+                                            const year = 1940 + index;
+                                            return <option key={year} value={year}>{year}</option>;
+                                        })
+                                    )}
+                                </select>
+                                <select className="box" id="birth-month" onFocus={handleFocusMonth} onChange={handleMonthChange}>
+                                    <option disabled selected>월</option>
+                                    {isMonthOptionExisted && (
+                                        Array.from({ length: 12 }, (_, index) => {
+                                            const month = index + 1;
+                                            return <option key={month} value={month}>{month}</option>;
+                                        })
+                                    )}
+                                </select>
+                                <select className="box" id="birth-day" onFocus={handleFocusDay} onChange={handleDayChange}>
+                                    <option disabled selected>일</option>
+                                    {isDayOptionExisted && (
+                                        Array.from({ length: 31 }, (_, index) => {
+                                            const day = index + 1;
+                                            return <option key={day} value={day}>{day}</option>;
+                                        })
+                                    )}
+                                </select>
                             </div>
                         </div>
 
                         <div className="mb-4 row">
                             <label className="col-sm-3 col-form-label">Age</label>
-                            <input
-                                className="col-sm-3 col-form-label"
-                                type="text"
-                                name="age"
-                                placeholder="나이 입력"
-                                value={userInfo?.age}
-                                onChange={(e) => setUserInfo({...userInfo, age: parseInt(e.target.value)})}
-                            />
+                            <label className="col-sm-3 col-form-label">{age}</label>
                         </div>
 
-                        <div className="mb-4 row justify-content-center">
-                            <button type="button" className="col-sm-1 col-form-label btn btn-outline-secondary" style={{marginRight:"15px"}} onClick={()=>{alert(JSON.stringify(userInfo));}}>취소</button>
-                            <button type="button" className="col-sm-1 col-form-label btn btn-outline-success" onClick={changeInfo}>수정</button>
+                        <div className="row justify-content-center">
+                            <button type="button" 
+                            style={{
+                                width: "109px",
+                                height: "34px",
+                                marginRight: "25px",
+                                marginBottom: "20px",
+                                borderRadius:"25px",
+                                backgroundColor:"#C6CAC3", 
+                                border:"0px"
+                            }}
+                            onClick={() => { window.location.reload(); }}
+                            >
+                                재설정
+                            </button>
+                            <button 
+                                type="button" 
+                                style={{
+                                    width: "109px",
+                                    height: "34px",
+                                    marginBottom: "20px",
+                                    borderRadius:"25px",
+                                    backgroundColor:"#B7DAA1", 
+                                    border:"0px"
+                                }}
+                                onClick={changeInfo}
+                            >
+                                수정
+                            </button>
                         </div>
                     </div>
                 </div>
