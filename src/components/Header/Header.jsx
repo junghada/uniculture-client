@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import logoImg from "../../assets/logo.png";
 import axios from "axios";
 import "../PageLayout/PageLayout.css"
+import Swal from "sweetalert2";
 
 const Header = () => {
     const navigate = useNavigate(); // 다른 component 로 이동할 때 사용
@@ -22,6 +23,10 @@ const Header = () => {
 
     const removeToken = () => {
         localStorage.removeItem('accessToken'); // 로컬 스토리지에서 토큰 가져옴
+        Swal.fire({
+            title: "<span style='font-size: 20px;'>로그아웃 되었습니다.</span>",
+            confirmButtonColor: "#8BC765"
+        });
         setIsLogin(false);
     };
     
@@ -45,10 +50,13 @@ const Header = () => {
                if(response.status === 200){
                     setMyNickname(response2.data.nickname);
                     setIsLogin(true);
-                } 
+                }
             }
         } catch (error) {
-            console.error('Login Error:', error);
+            if(error.response.status === 401) {
+                console.log("401 오류");
+            }
+            // else console.error('Login Error:', error);
         }
     };
 
