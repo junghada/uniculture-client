@@ -17,9 +17,6 @@ const ProfileInfo = () => {
     const [checkPassword, setCheckPassword] = useState(''); //확인 비밀번호
     const [showCheckPassword, setShowCheckPassword] = useState(false) //확인 비밀번호 보기
 
-    const [isYearOptionExisted, setIsYearOptionExisted] = useState(false);
-    const [isMonthOptionExisted, setIsMonthOptionExisted] = useState(false);
-    const [isDayOptionExisted, setIsDayOptionExisted] = useState(false);
     const [selectedYear, setSelectedYear] = useState(null);
     const [selectedMonth, setSelectedMonth] = useState(null);
     const [selectedDay, setSelectedDay] = useState(null);
@@ -29,7 +26,7 @@ const ProfileInfo = () => {
     const getToken = () => {
         return localStorage.getItem('accessToken'); // 쿠키 또는 로컬 스토리지에서 토큰을 가져옴
     };
-    
+
     // 서버에 정보를 요청하는 함수
     const fetchUserInfo = async () => {
         console.log('myPage');
@@ -42,8 +39,11 @@ const ProfileInfo = () => {
             });
             if(response.status === 200) {
                 setUserInfo(response.data); // 서버에서 받은 사용자 정보 반환
-                setOriginalNickname(response.data.nickname); 
+                setOriginalNickname(response.data.nickname);
                 setAge(response.data.age||0);
+                setSelectedYear(response.data.year);
+                setSelectedMonth(response.data.month);
+                setSelectedDay(response.data.day);
             }
             else if(response.status === 400) {
                 console.log('클라이언트 에러(입력 형식 불량)');
@@ -56,7 +56,7 @@ const ProfileInfo = () => {
             throw error;
         }
     };
-    
+
     useEffect(() => {
         fetchUserInfo();
     },[]);
@@ -67,12 +67,11 @@ const ProfileInfo = () => {
         try {
             // 수정할 데이터를 담을 객체 생성
             const requestData = {
-                age: userInfo.age,
                 gender: userInfo.gender,
-                // year: selectedYear,
-                // month: selectedMonth,
-                // day: selectedDay,
-                // age: age
+                year: selectedYear,
+                month: selectedMonth,
+                day: selectedDay,
+                age : age
             };
 
             // 닉네임이 변경되었을 경우에만 requestData에 추가
@@ -80,7 +79,7 @@ const ProfileInfo = () => {
                 if(nickNameValid==null){
                     alert("닉네임 중복 확인을 해주세요.")
                     return;
-                } 
+                }
                 else if(!nickNameValid){
                     alert("닉네임이 유효하지 않습니다.")
                     return;
@@ -141,7 +140,7 @@ const ProfileInfo = () => {
             if (response.status === 200) {
                 console.log(`api 요청 후: ${userInfo.nickname}`);
                 setNickNameValid(true); // 닉네임이 유효하다는 것을 나타냄
-            } 
+            }
         } catch (err) {
             if(err.response.status === 409){
                 if(userInfo.nickname !== originalNickname){
@@ -187,23 +186,6 @@ const ProfileInfo = () => {
         }
     };
 
-    // 생년월일 드롭다운 처음 포커스 할 때 드롭다운 옵션 동적으로 생성
-    const handleFocusYear = () => {
-        if (!isYearOptionExisted) {
-            setIsYearOptionExisted(true);
-        }
-    };
-    const handleFocusMonth = () => {
-        if (!isMonthOptionExisted) {
-            setIsMonthOptionExisted(true);
-        }
-    };
-    const handleFocusDay = () => {
-        if (!isDayOptionExisted) {
-            setIsDayOptionExisted(true);
-        }
-    };
-
     // 생년월일 선택한 값으로 상태 설정
     const handleYearChange = (e) => {
         setSelectedYear(parseInt(e.target.value));
@@ -230,9 +212,6 @@ const ProfileInfo = () => {
                 age--;
             }
             setAge(age);
-            setSelectedYear(userInfo.year);
-            setSelectedMonth(userInfo.month);
-            setSelectedDay(userInfo.day);
         }
     }, [userInfo]);
 
@@ -278,14 +257,14 @@ const ProfileInfo = () => {
                                 value={userInfo?.nickname}
                                 onChange={changeNickName}
                             />
-                            <button 
+                            <button
                                 style={{
                                     width: "80px",
                                     height: "34px",
                                     marginLeft: "25px",
                                     marginBottom: "20px",
                                     borderRadius:"25px",
-                                    backgroundColor:"#C6CAC3", 
+                                    backgroundColor:"#C6CAC3",
                                     border:"0px"
                                 }}
                                 onClick={handleNickName}
@@ -302,16 +281,16 @@ const ProfileInfo = () => {
                                             <div style={{color: "red"}}>사용 불가능한 닉네임입니다.</div>
                                         )}
                                     </div>
-                                </div>            
+                                </div>
                             )}
                         </div>
 
                         <div className="mb-2 row">
                             <label className="col-sm-3 col-form-label">Password</label>
-                            <input 
+                            <input
                                 style={{display:"flex", width:"150px", height:"40px"}}
                                 type={showExPassword ? "text" : "password"}
-                                placeholder="현재 비밀번호 입력" 
+                                placeholder="현재 비밀번호 입력"
                                 onChange={(e) => {setExPassword(e.target.value)}}
                             />
                             <label className="col-sm-3">
@@ -319,10 +298,10 @@ const ProfileInfo = () => {
                                 <span className="pwCheck">비밀번호 보기</span>
                             </label>
                         </div>
-                        
+
                         <div className="mb-2 row">
                             <label className="col-sm-3 col-form-label"></label>
-                            <input 
+                            <input
                                 style={{display:"flex", width:"150px", height:"40px"}}
                                 type={showNewPassword ? "text" : "password"}
                                 placeholder="새 비밀번호 입력"
@@ -345,10 +324,10 @@ const ProfileInfo = () => {
 
                         <div className="mb-4 row">
                             <label className="col-sm-3 col-form-label"></label>
-                            <input 
+                            <input
                                 style={{display:"flex", width:"150px", height:"40px"}}
                                 type={showCheckPassword ? "text" : "password"}
-                                placeholder="새 비밀번호 확인" 
+                                placeholder="새 비밀번호 확인"
                                 onChange={(e) => {setCheckPassword(e.target.value)}}
                             />
                             <label className="col-sm-3">
@@ -383,30 +362,36 @@ const ProfileInfo = () => {
                         <div className="mb-4 row">
                             <label className="col-sm-3 col-form-label">Birth</label>
                             <div style={{display:"flex", width:"300px", padding:"0px"}}>
-                                <select className="box" id="birth-year" onFocus={handleFocusYear} onChange={handleYearChange} >
+                                <select className="box" id="birth-year" onChange={handleYearChange} >
                                     <option disabled selected>출생 연도</option>
-                                    {isYearOptionExisted && (
+                                    {userInfo && userInfo.year && (
                                         Array.from({ length: 2023 - 1940 }, (_, index) => {
                                             const year = 1940 + index;
-                                            return <option key={year} value={year}>{year}</option>;
+                                            if(year===userInfo.year){
+                                                return <option key={year} value={year} selected>{year}</option>;}
+                                            else return <option key={year} value={year}>{year}</option>;
                                         })
                                     )}
                                 </select>
-                                <select className="box" id="birth-month" onFocus={handleFocusMonth} onChange={handleMonthChange}>
+                                <select className="box" id="birth-month" onChange={handleMonthChange}>
                                     <option disabled selected>월</option>
-                                    {isMonthOptionExisted && (
+                                    { userInfo && userInfo.month && (
                                         Array.from({ length: 12 }, (_, index) => {
                                             const month = index + 1;
-                                            return <option key={month} value={month}>{month}</option>;
+                                            if(month===userInfo.month){
+                                                return <option key={month} value={month} selected>{month}</option>;}
+                                            else return <option key={month} value={month}>{month}</option>;
                                         })
                                     )}
                                 </select>
-                                <select className="box" id="birth-day" onFocus={handleFocusDay} onChange={handleDayChange}>
+                                <select className="box" id="birth-day" onChange={handleDayChange}>
                                     <option disabled selected>일</option>
-                                    {isDayOptionExisted && (
+                                    {userInfo && userInfo.day && (
                                         Array.from({ length: 31 }, (_, index) => {
                                             const day = index + 1;
-                                            return <option key={day} value={day}>{day}</option>;
+                                            if(day===userInfo.day){
+                                                return <option key={day} value={day} selected>{day}</option>;}
+                                            else return <option key={day} value={day}>{day}</option>;
                                         })
                                     )}
                                 </select>
@@ -419,28 +404,28 @@ const ProfileInfo = () => {
                         </div>
 
                         <div className="row justify-content-center">
-                            <button type="button" 
-                            style={{
-                                width: "109px",
-                                height: "34px",
-                                marginRight: "25px",
-                                marginBottom: "20px",
-                                borderRadius:"25px",
-                                backgroundColor:"#C6CAC3", 
-                                border:"0px"
-                            }}
-                            onClick={() => { window.location.reload(); }}
+                            <button type="button"
+                                    style={{
+                                        width: "109px",
+                                        height: "34px",
+                                        marginRight: "25px",
+                                        marginBottom: "20px",
+                                        borderRadius:"25px",
+                                        backgroundColor:"#C6CAC3",
+                                        border:"0px"
+                                    }}
+                                    onClick={() => { window.location.reload(); }}
                             >
                                 재설정
                             </button>
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 style={{
                                     width: "109px",
                                     height: "34px",
                                     marginBottom: "20px",
                                     borderRadius:"25px",
-                                    backgroundColor:"#B7DAA1", 
+                                    backgroundColor:"#B7DAA1",
                                     border:"0px"
                                 }}
                                 onClick={changeInfo}

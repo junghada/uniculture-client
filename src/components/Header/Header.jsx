@@ -47,7 +47,7 @@ const Header = () => {
                     }
                 });
 
-                if(response.status === 200){
+               if(response.status === 200){
                     setMyNickname(response2.data.nickname);
                     setIsLogin(true);
                 }
@@ -70,7 +70,7 @@ const Header = () => {
 
     const NavItem = ({ to, text, activePage }) => (
         <li className={`nav-item ${activePage(to)}`}>
-            <Link to={to} className={`nav-link ${activePage(to)}`}>{text}</Link>
+            <Link to={isLogin ? to : '/sign-in'} className={`nav-link ${activePage(to)}`}>{text}</Link>
         </li>
     );
 
@@ -122,11 +122,13 @@ const Header = () => {
 
                     <div className={`collapse navbar-collapse ${isNavOpen ? 'show' : ''}`}>
                         <ul className="navbar-nav">
-                            <NavItem to="/" text="홈" activePage={activePage} />
+                            <li className={`nav-item ${activePage("/")}`}>
+                                <Link to="/" className={`nav-link ${activePage("/")}`}>홈</Link>
+                            </li>
                             <NavItem to="/friends" text="친구" activePage={activePage} />
                             <NavItem to="/study" text="스터디" activePage={activePage} />
                             <NavItem to="/chatting" text="채팅" activePage={activePage} />
-                            <NavItem to={`/profile/${myNickname}`} text="프로필" activePage={activePage} />
+                            <NavItem to={`/profile/${myNickname}`} text="프로필" activePage={activePage}/> 
                         </ul>
                     </div>
                 </div>
