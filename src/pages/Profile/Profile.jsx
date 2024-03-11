@@ -43,7 +43,7 @@ const Profile = () => {
                 }
             }
             else { //로그인 X
-                const response = await axios.get('/api/member/otherPage/16');
+                const response = await axios.get(`/api/member/otherPage/${nickname}`);
 
                 if (response.status === 200) {
                     setOtherInfo(response.data);
@@ -59,7 +59,7 @@ const Profile = () => {
 
     useEffect(() => {
         fetchUserInfo();
-    },[]);
+    },[nickname]);
 
     const handleMyInfo = () => {
         fetchUserInfo();
