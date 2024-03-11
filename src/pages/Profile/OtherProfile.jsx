@@ -109,9 +109,8 @@ export default function OtherProfile({myInformation, otherInformation}) {
             const token = getToken(); // 토큰 가져오기
 
             if(token){ //로그인 O
-                const response = await axios.post('/api/auth/room', { 
-                    name: "RoomName", // 방 이름 추가
-                    memberIds: [myInfo.id, otherInfo.id]
+                const response = await axios.post('/api/auth/friend', { 
+                    targetId: otherInfo.id 
                 }, {
                     headers: {
                         Authorization: `Bearer ${token}` // 헤더에 토큰 추가
