@@ -69,10 +69,10 @@ const ProfileInfo = () => {
             const requestData = {
                 age: userInfo.age,
                 gender: userInfo.gender,
-                // year: selectedYear,
-                // month: selectedMonth,
-                // day: selectedDay,
-                // age: age
+                year: selectedYear,
+                month: selectedMonth,
+                day: selectedDay,
+                age : age
             };
 
             // 닉네임이 변경되었을 경우에만 requestData에 추가
@@ -230,9 +230,6 @@ const ProfileInfo = () => {
                 age--;
             }
             setAge(age);
-            setSelectedYear(userInfo.year);
-            setSelectedMonth(userInfo.month);
-            setSelectedDay(userInfo.day);
         }
     }, [userInfo]);
 
