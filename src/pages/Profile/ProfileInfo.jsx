@@ -26,7 +26,7 @@ const ProfileInfo = () => {
     const getToken = () => {
         return localStorage.getItem('accessToken'); // 쿠키 또는 로컬 스토리지에서 토큰을 가져옴
     };
-    
+
     // 서버에 정보를 요청하는 함수
     const fetchUserInfo = async () => {
         console.log('myPage');
@@ -39,7 +39,7 @@ const ProfileInfo = () => {
             });
             if(response.status === 200) {
                 setUserInfo(response.data); // 서버에서 받은 사용자 정보 반환
-                setOriginalNickname(response.data.nickname); 
+                setOriginalNickname(response.data.nickname);
                 setAge(response.data.age||0);
                 setSelectedYear(response.data.year);
                 setSelectedMonth(response.data.month);
@@ -56,7 +56,7 @@ const ProfileInfo = () => {
             throw error;
         }
     };
-    
+
     useEffect(() => {
         fetchUserInfo();
     },[]);
@@ -79,7 +79,7 @@ const ProfileInfo = () => {
                 if(nickNameValid==null){
                     alert("닉네임 중복 확인을 해주세요.")
                     return;
-                } 
+                }
                 else if(!nickNameValid){
                     alert("닉네임이 유효하지 않습니다.")
                     return;
@@ -140,7 +140,7 @@ const ProfileInfo = () => {
             if (response.status === 200) {
                 console.log(`api 요청 후: ${userInfo.nickname}`);
                 setNickNameValid(true); // 닉네임이 유효하다는 것을 나타냄
-            } 
+            }
         } catch (err) {
             if(err.response.status === 409){
                 if(userInfo.nickname !== originalNickname){
@@ -257,14 +257,14 @@ const ProfileInfo = () => {
                                 value={userInfo?.nickname}
                                 onChange={changeNickName}
                             />
-                            <button 
+                            <button
                                 style={{
                                     width: "80px",
                                     height: "34px",
                                     marginLeft: "25px",
                                     marginBottom: "20px",
                                     borderRadius:"25px",
-                                    backgroundColor:"#C6CAC3", 
+                                    backgroundColor:"#C6CAC3",
                                     border:"0px"
                                 }}
                                 onClick={handleNickName}
@@ -281,16 +281,16 @@ const ProfileInfo = () => {
                                             <div style={{color: "red"}}>사용 불가능한 닉네임입니다.</div>
                                         )}
                                     </div>
-                                </div>            
+                                </div>
                             )}
                         </div>
 
                         <div className="mb-2 row">
                             <label className="col-sm-3 col-form-label">Password</label>
-                            <input 
+                            <input
                                 style={{display:"flex", width:"150px", height:"40px"}}
                                 type={showExPassword ? "text" : "password"}
-                                placeholder="현재 비밀번호 입력" 
+                                placeholder="현재 비밀번호 입력"
                                 onChange={(e) => {setExPassword(e.target.value)}}
                             />
                             <label className="col-sm-3">
@@ -298,10 +298,10 @@ const ProfileInfo = () => {
                                 <span className="pwCheck">비밀번호 보기</span>
                             </label>
                         </div>
-                        
+
                         <div className="mb-2 row">
                             <label className="col-sm-3 col-form-label"></label>
-                            <input 
+                            <input
                                 style={{display:"flex", width:"150px", height:"40px"}}
                                 type={showNewPassword ? "text" : "password"}
                                 placeholder="새 비밀번호 입력"
@@ -324,10 +324,10 @@ const ProfileInfo = () => {
 
                         <div className="mb-4 row">
                             <label className="col-sm-3 col-form-label"></label>
-                            <input 
+                            <input
                                 style={{display:"flex", width:"150px", height:"40px"}}
                                 type={showCheckPassword ? "text" : "password"}
-                                placeholder="새 비밀번호 확인" 
+                                placeholder="새 비밀번호 확인"
                                 onChange={(e) => {setCheckPassword(e.target.value)}}
                             />
                             <label className="col-sm-3">
@@ -404,28 +404,28 @@ const ProfileInfo = () => {
                         </div>
 
                         <div className="row justify-content-center">
-                            <button type="button" 
-                            style={{
-                                width: "109px",
-                                height: "34px",
-                                marginRight: "25px",
-                                marginBottom: "20px",
-                                borderRadius:"25px",
-                                backgroundColor:"#C6CAC3", 
-                                border:"0px"
-                            }}
-                            onClick={() => { window.location.reload(); }}
+                            <button type="button"
+                                    style={{
+                                        width: "109px",
+                                        height: "34px",
+                                        marginRight: "25px",
+                                        marginBottom: "20px",
+                                        borderRadius:"25px",
+                                        backgroundColor:"#C6CAC3",
+                                        border:"0px"
+                                    }}
+                                    onClick={() => { window.location.reload(); }}
                             >
                                 재설정
                             </button>
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 style={{
                                     width: "109px",
                                     height: "34px",
                                     marginBottom: "20px",
                                     borderRadius:"25px",
-                                    backgroundColor:"#B7DAA1", 
+                                    backgroundColor:"#B7DAA1",
                                     border:"0px"
                                 }}
                                 onClick={changeInfo}
