@@ -7,6 +7,7 @@ import "../PageLayout/PageLayout.css"
 const Header = () => {
     const navigate = useNavigate(); // 다른 component 로 이동할 때 사용
     const [isNavOpen, setNavOpen] = useState(false);
+    const [isLogin, setIsLogin] = useState(false);
     const [myNickname, setMyNickname] = useState('');
 
     useEffect(() => {
@@ -21,28 +22,31 @@ const Header = () => {
 
     const removeToken = () => {
         localStorage.removeItem('accessToken'); // 로컬 스토리지에서 토큰 가져옴
+        setIsLogin(false);
     };
     
     const loginCheck = async () => {
         console.log('loginCheck');
         try {
             const token = getToken(); // 토큰 가져오기
-            const response = await axios.get('/api/auth/sec/home', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+            if(token){
+                const response = await axios.get('/api/auth/sec/home', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
 
-            const response2 = await axios.get('/api/auth/member/myPage', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+                const response2 = await axios.get('/api/auth/member/myPage', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
 
-            if(response.status == 200){
-                setMyNickname(response2.data.nickname);
+               if(response.status === 200){
+                    setMyNickname(response2.data.nickname);
+                    setIsLogin(true);
+                } 
             }
-
         } catch (error) {
             console.error('Login Error:', error);
         }
@@ -58,7 +62,7 @@ const Header = () => {
 
     const NavItem = ({ to, text, activePage }) => (
         <li className={`nav-item ${activePage(to)}`}>
-            <Link to={to} className={`nav-link ${activePage(to)}`}>{text}</Link>
+            <Link to={isLogin ? to : '/sign-in'} className={`nav-link ${activePage(to)}`}>{text}</Link>
         </li>
     );
 
@@ -80,7 +84,7 @@ const Header = () => {
                         </Link>
                     </div>
 
-                    {getToken() ? (
+                    {isLogin ? (
                         <button className={`btn nav-link ms-auto order-lg-last`} onClick={removeToken} style={{ backgroundColor: "#B3C693", padding: "5px 15px", marginRight: "10px"}}>
                             로그아웃
                         </button>
@@ -110,11 +114,13 @@ const Header = () => {
 
                     <div className={`collapse navbar-collapse ${isNavOpen ? 'show' : ''}`}>
                         <ul className="navbar-nav">
-                            <NavItem to="/" text="홈" activePage={activePage} />
+                            <li className={`nav-item ${activePage("/")}`}>
+                                <Link to="/" className={`nav-link ${activePage("/")}`}>홈</Link>
+                            </li>
                             <NavItem to="/friends" text="친구" activePage={activePage} />
                             <NavItem to="/study" text="스터디" activePage={activePage} />
                             <NavItem to="/chatting" text="채팅" activePage={activePage} />
-                            <NavItem to={`/profile/${myNickname}`} text="프로필" activePage={activePage} />
+                            <NavItem to={`/profile/${myNickname}`} text="프로필" activePage={activePage}/> 
                         </ul>
                     </div>
                 </div>
