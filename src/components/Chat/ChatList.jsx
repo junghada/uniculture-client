@@ -30,7 +30,7 @@ const ChatList = ({onSelectedChatRoom}) => {
             }
           });
           console.log('서버응답:', response);
-          if(response===200) { setChatRooms(response.data);}
+          if(response.status===200) { setChatRooms(response.data);}
           else {console.log("서버 응답 오류");}
 
         } catch (error) {
