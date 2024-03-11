@@ -67,7 +67,6 @@ const ProfileInfo = () => {
         try {
             // 수정할 데이터를 담을 객체 생성
             const requestData = {
-                age: userInfo.age,
                 gender: userInfo.gender,
                 year: selectedYear,
                 month: selectedMonth,
