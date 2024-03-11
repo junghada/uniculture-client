@@ -3,10 +3,12 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import logoImg from "../../assets/logo.png";
 import axios from "axios";
 import "../PageLayout/PageLayout.css"
+import Swal from "sweetalert2";
 
 const Header = () => {
     const navigate = useNavigate(); // 다른 component 로 이동할 때 사용
     const [isNavOpen, setNavOpen] = useState(false);
+    const [isLogin, setIsLogin] = useState(false);
     const [myNickname, setMyNickname] = useState('');
 
     useEffect(() => {
@@ -21,30 +23,40 @@ const Header = () => {
 
     const removeToken = () => {
         localStorage.removeItem('accessToken'); // 로컬 스토리지에서 토큰 가져옴
+        Swal.fire({
+            title: "<span style='font-size: 20px;'>로그아웃 되었습니다.</span>",
+            confirmButtonColor: "#8BC765"
+        });
+        setIsLogin(false);
     };
     
     const loginCheck = async () => {
         console.log('loginCheck');
         try {
             const token = getToken(); // 토큰 가져오기
-            const response = await axios.get('/api/auth/sec/home', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+            if(token){
+                const response = await axios.get('/api/auth/sec/home', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
 
-            const response2 = await axios.get('/api/auth/member/myPage', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+                const response2 = await axios.get('/api/auth/member/myPage', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
 
-            if(response.status == 200){
-                setMyNickname(response2.data.nickname);
+                if(response.status === 200){
+                    setMyNickname(response2.data.nickname);
+                    setIsLogin(true);
+                }
             }
-
         } catch (error) {
-            console.error('Login Error:', error);
+            if(error.response.status === 401) {
+                console.log("401 오류");
+            }
+            // else console.error('Login Error:', error);
         }
     };
 
@@ -80,7 +92,7 @@ const Header = () => {
                         </Link>
                     </div>
 
-                    {getToken() ? (
+                    {isLogin ? (
                         <button className={`btn nav-link ms-auto order-lg-last`} onClick={removeToken} style={{ backgroundColor: "#B3C693", padding: "5px 15px", marginRight: "10px"}}>
                             로그아웃
                         </button>
