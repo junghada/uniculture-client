@@ -7,9 +7,10 @@ import React, { useState, useEffect } from 'react';
 import Swal from "sweetalert2";
 
 const Profile = () => {
-    const [userInfo, setUserInfo] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [friends, setFriends] = useState([]); //친구 목록
+    const { nickname } = useParams();
+    const [myProfile, setMyProfile] = useState(false);
+    const [myInfo, setMyInfo] = useState(null);
+    const [otherInfo, setOtherInfo] = useState(null);
     const navigate = useNavigate();
 
     // 로그인 후 저장된 토큰 가져오는 함수
