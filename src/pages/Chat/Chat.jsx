@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import "../../components/PageLayout/PageLayout.css"
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import './Chat.css';
+import style from './Chat.module.css';
 
 const Chat = () => {
     const navigate = useNavigate(); // 페이지 이동을 위한 navigate 함수
@@ -72,8 +72,8 @@ const Chat = () => {
     return (
         <div style={{backgroundColor: '#FBFBF3', height:'100vh'}}>
             <Header />
-            <div className="page-layout">
-                <section className="box">
+            <div className={style.page_layout}>
+                <section className={style.box}>
                     <aside>
                         <ChatList onSelectedChatRoom={handleSelectChatRoom}/>
                     </aside>
