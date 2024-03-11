@@ -17,9 +17,6 @@ const ProfileInfo = () => {
     const [checkPassword, setCheckPassword] = useState(''); //확인 비밀번호
     const [showCheckPassword, setShowCheckPassword] = useState(false) //확인 비밀번호 보기
 
-    const [isYearOptionExisted, setIsYearOptionExisted] = useState(false);
-    const [isMonthOptionExisted, setIsMonthOptionExisted] = useState(false);
-    const [isDayOptionExisted, setIsDayOptionExisted] = useState(false);
     const [selectedYear, setSelectedYear] = useState(null);
     const [selectedMonth, setSelectedMonth] = useState(null);
     const [selectedDay, setSelectedDay] = useState(null);
@@ -44,6 +41,9 @@ const ProfileInfo = () => {
                 setUserInfo(response.data); // 서버에서 받은 사용자 정보 반환
                 setOriginalNickname(response.data.nickname); 
                 setAge(response.data.age||0);
+                setSelectedYear(response.data.year);
+                setSelectedMonth(response.data.month);
+                setSelectedDay(response.data.day);
             }
             else if(response.status === 400) {
                 console.log('클라이언트 에러(입력 형식 불량)');
@@ -184,23 +184,6 @@ const ProfileInfo = () => {
             setPwValid(true);
         } else {
             setPwValid(false);
-        }
-    };
-
-    // 생년월일 드롭다운 처음 포커스 할 때 드롭다운 옵션 동적으로 생성
-    const handleFocusYear = () => {
-        if (!isYearOptionExisted) {
-            setIsYearOptionExisted(true);
-        }
-    };
-    const handleFocusMonth = () => {
-        if (!isMonthOptionExisted) {
-            setIsMonthOptionExisted(true);
-        }
-    };
-    const handleFocusDay = () => {
-        if (!isDayOptionExisted) {
-            setIsDayOptionExisted(true);
         }
     };
 
@@ -380,30 +363,36 @@ const ProfileInfo = () => {
                         <div className="mb-4 row">
                             <label className="col-sm-3 col-form-label">Birth</label>
                             <div style={{display:"flex", width:"300px", padding:"0px"}}>
-                                <select className="box" id="birth-year" onFocus={handleFocusYear} onChange={handleYearChange} >
+                                <select className="box" id="birth-year" onChange={handleYearChange} >
                                     <option disabled selected>출생 연도</option>
-                                    {isYearOptionExisted && (
+                                    {userInfo && userInfo.year && (
                                         Array.from({ length: 2023 - 1940 }, (_, index) => {
                                             const year = 1940 + index;
-                                            return <option key={year} value={year}>{year}</option>;
+                                            if(year===userInfo.year){
+                                                return <option key={year} value={year} selected>{year}</option>;}
+                                            else return <option key={year} value={year}>{year}</option>;
                                         })
                                     )}
                                 </select>
-                                <select className="box" id="birth-month" onFocus={handleFocusMonth} onChange={handleMonthChange}>
+                                <select className="box" id="birth-month" onChange={handleMonthChange}>
                                     <option disabled selected>월</option>
-                                    {isMonthOptionExisted && (
+                                    { userInfo && userInfo.month && (
                                         Array.from({ length: 12 }, (_, index) => {
                                             const month = index + 1;
-                                            return <option key={month} value={month}>{month}</option>;
+                                            if(month===userInfo.month){
+                                                return <option key={month} value={month} selected>{month}</option>;}
+                                            else return <option key={month} value={month}>{month}</option>;
                                         })
                                     )}
                                 </select>
-                                <select className="box" id="birth-day" onFocus={handleFocusDay} onChange={handleDayChange}>
+                                <select className="box" id="birth-day" onChange={handleDayChange}>
                                     <option disabled selected>일</option>
-                                    {isDayOptionExisted && (
+                                    {userInfo && userInfo.day && (
                                         Array.from({ length: 31 }, (_, index) => {
                                             const day = index + 1;
-                                            return <option key={day} value={day}>{day}</option>;
+                                            if(day===userInfo.day){
+                                                return <option key={day} value={day} selected>{day}</option>;}
+                                            else return <option key={day} value={day}>{day}</option>;
                                         })
                                     )}
                                 </select>
