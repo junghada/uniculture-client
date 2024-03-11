@@ -26,6 +26,10 @@ const Header = () => {
         Swal.fire({
             title: "<span style='font-size: 20px;'>로그아웃 되었습니다.</span>",
             confirmButtonColor: "#8BC765"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.reload(); // 페이지 새로고침
+            }
         });
         setIsLogin(false);
     };
